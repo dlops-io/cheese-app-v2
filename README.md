@@ -146,6 +146,8 @@ Here we will use the React frontend framework to build a robust cheese app. The 
 ### Build & Run Container
 - Run `sh docker-shell.sh`
 
+- `npm install`
+
 
 ### Start Web Server
 - Run `yarn start` from the docker shell
