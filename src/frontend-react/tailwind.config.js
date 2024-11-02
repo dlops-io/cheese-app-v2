@@ -1,9 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        './pages/**/*.{js,jsx}',
-        './components/**/*.{js,jsx}',
         './app/**/*.{js,jsx}',
+        './components/**/*.{js,jsx}',
     ],
     theme: {
         extend: {
@@ -11,9 +10,6 @@ module.exports = {
                 sans: ['Source Sans Pro', 'sans-serif'],
                 montserrat: ['Montserrat', 'sans-serif'],
                 playfair: ['Playfair Display', 'serif'],
-            },
-            height: {
-                screen: '100vh',
             },
         },
     },
