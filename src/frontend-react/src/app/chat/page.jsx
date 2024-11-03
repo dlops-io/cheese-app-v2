@@ -9,7 +9,6 @@ const recentChats = [
     {
         id: 1,
         title: 'Exploring the World of Cheese Through AI',
-        project: 'formaggio.me',
         time: '29 minutes ago'
     },
     {
@@ -21,19 +20,16 @@ const recentChats = [
     {
         id: 3,
         title: 'Rebuilding a Website with Organized Code',
-        project: 'formaggio.me',
         time: '3 hours ago'
     },
     {
         id: 4,
         title: 'Troubleshooting Styles in Next.js React App',
-        project: 'Next.JS + React APP',
         time: '21 hours ago'
     },
     {
         id: 5,
         title: 'Cheese Icon Request',
-        project: null,
         time: '1 day ago'
     }
 ];

@@ -3,14 +3,15 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Info, Podcasts, Email } from '@mui/icons-material';
+import { Home, Info, Podcasts, Email, SmartToy, ChatBubbleOutline } from '@mui/icons-material';
 import styles from './Header.module.css';
 
 const navItems = [
     { name: 'Home', path: '/', sectionId: '', icon: <Home fontSize="small" /> },
     { name: 'About', path: '/', sectionId: 'about', icon: <Info fontSize="small" /> },
     { name: 'Podcasts', path: '/podcasts', sectionId: 'podcasts', icon: <Podcasts fontSize="small" /> },
-    { name: 'Newsletters', path: '/newsletters', sectionId: 'newsletters', icon: <Email fontSize="small" /> }
+    { name: 'Newsletters', path: '/newsletters', sectionId: 'newsletters', icon: <Email fontSize="small" /> },
+    { name: 'Chat', path: '/chat', sectionId: '', icon: <SmartToy fontSize="small" /> }
 ];
 
 export default function Header() {
@@ -45,34 +46,13 @@ export default function Header() {
     }, [pathname]);
 
     // Handlers
-    const handleNavClick = (e, item) => {
-        e.preventDefault();
-
-        console.log(pathname);
-
-        // If it's a section link and we're on the home page
-        if (item.sectionId && pathname === '/') {
-            const element = document.getElementById(item.sectionId);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-        // If it's a section link but we're not on home page
-        else if (item.sectionId) {
-            router.push(`/${item.sectionId}`);
-        }
-        // If it's a regular page link
-        else {
-            router.push(item.path);
-        }
-    };
     function buildHref(item) {
 
         let href = item.path;
-        if (pathname === "/") {
+        if ((pathname === "/") && (item.sectionId != '')) {
             href = `#${item.sectionId}`;
         } else {
-            if (item.path === "/") {
+            if ((item.path === "/") && (item.sectionId != '')) {
                 href = item.path + `#${item.sectionId}`;
             } else {
                 href = item.path;

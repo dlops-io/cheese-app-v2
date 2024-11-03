@@ -1,6 +1,6 @@
 /* src/app/chat/styles.module.css */
 .container {
-    /* min-height: calc(100vh - 67px); */
+    min-height: calc(150vh - 67px);
     /* background: #2C2C2C; */
     /* color: #FFFFFF;
     padding: 40px 20px; */
@@ -175,11 +175,12 @@
 }
 
 .chatCard {
-    background: #e3e2e2;
+    /* background: #e3e2e2; */
     border-radius: 12px;
     padding: 20px;
     cursor: pointer;
     transition: transform 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .chatCard:hover {
