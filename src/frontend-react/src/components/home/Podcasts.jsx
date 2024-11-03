@@ -1,4 +1,5 @@
 
+import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Podcasts.module.css';
 import { PlayCircle } from '@mui/icons-material';
@@ -54,7 +55,7 @@ export default function Podcasts() {
                             height: 'auto',
                         }}
                     />
-                    <h3>About Podcast</h3>
+                    <h3>About Podcasts</h3>
                     <p>
                         Welcome to The Cheese Podcast, where we celebrate cheeses from around
                         the world in multiple languages! Each episode dives into the flavors,
@@ -96,6 +97,11 @@ export default function Podcasts() {
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className={styles.viewAllContainer}>
+                <Link href="/podcasts" className={styles.viewAllButton}>
+                    View All Podcasts
+                </Link>
             </div>
         </section>
     )
