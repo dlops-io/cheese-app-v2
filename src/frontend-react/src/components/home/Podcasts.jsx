@@ -1,43 +1,35 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Podcasts.module.css';
 import { PlayCircle } from '@mui/icons-material';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-//import PodcastCard from '@/components/shared/PodcastCard';
+import DataService from "../../services/MockDataService"; // Mock
+//import DataService from "../../services/DataService";
 
-const episodes = [
-    {
-        id: 1,
-        title: 'Episode 1 (Halloumi) [FR]',
-        date: 'Posted 12 September 2024',
-        duration: '00:05:36',
-        language: 'FR',
-    },
-    {
-        id: 2,
-        title: 'Episode 1 (Halloumi) [ES]',
-        date: 'Posted 12 September 2024',
-        duration: '00:05:59',
-        language: 'ES',
-    },
-    {
-        id: 3,
-        title: 'Episode 1 (Halloumi) [IT]',
-        date: 'Posted 12 September 2024',
-        duration: '00:05:57',
-        language: 'IT',
-    },
-    {
-        id: 4,
-        title: 'Episode 1 (Halloumi) [EN]',
-        date: 'Posted 12 September 2024',
-        duration: '00:04:53',
-        language: 'EN',
-    },
-];
 
 export default function Podcasts() {
+    // Component States
+    const [episodes, setEpisodes] = useState([]);
+
+    // Setup Component
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await DataService.GetPodcasts(4); // Limiting to 4 episodes for the main view
+                setEpisodes(response.data);
+            } catch (error) {
+                console.error('Error fetching podcasts:', error);
+                setEpisodes([]); // Set empty array in case of error
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <section className={styles.section} id="podcasts">
             <h2 className={styles.title}>Podcast</h2>

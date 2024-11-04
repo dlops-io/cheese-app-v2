@@ -1,47 +1,32 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Newsletters.module.css';
+import DataService from "../../services/MockDataService"; // Mock
+//import DataService from "../../services/DataService";
 
-// Sample newsletter data - this would come from your API/database
-const newsletters = [
-    {
-        id: 1,
-        date: 'September 15, 2024',
-        title: 'Exploring Alpine Cheeses',
-        excerpt: 'Discover the rich traditions of Alpine cheesemaking, from Swiss Gruyère to French Beaufort. Learn how altitude and seasonal grazing practices influence the unique flavors of these mountain cheeses...',
-        readTime: '5 min read'
-    },
-    {
-        id: 2,
-        date: 'September 8, 2024',
-        title: 'The Art of Blue Cheese',
-        excerpt: 'Dive into the fascinating world of blue cheeses, from Italian Gorgonzola to French Roquefort. Understand the role of Penicillium roqueforti and how it creates those distinctive blue-green veins...',
-        readTime: '4 min read'
-    },
-    {
-        id: 3,
-        date: 'September 1, 2024',
-        title: 'Spanish Cheese Journey',
-        excerpt: 'Take a virtual tour through Spains diverse cheese landscape, from the sharp Manchego of La Mancha to the smoky Idiazábal of the Basque Country...',
-        readTime: '6 min read'
-    },
-    {
-        id: 4,
-        date: 'August 25, 2024',
-        title: 'Fresh Cheese Fundamentals',
-        excerpt: 'Learn about the world of fresh cheeses, from Italian Mozzarella to Indian Paneer. Discover how these young cheeses are made and the best ways to enjoy them...',
-        readTime: '4 min read'
-    },
-    {
-        id: 5,
-        date: 'August 18, 2024',
-        title: 'Aging Gracefully: A Guide to Cheese Maturation',
-        excerpt: 'Explore the science and art behind cheese aging. From temperature and humidity control to the development of flavor crystals...',
-        readTime: '7 min read'
-    },
-];
 
 export default function Newsletter() {
+    // Component States
+    const [newsletters, setNewsletters] = useState([]);
+
+    // Setup Component
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await DataService.GetNewsletters(4); // Limiting to 4 episodes for the main view
+                setNewsletters(response.data);
+            } catch (error) {
+                console.error('Error fetching podcasts:', error);
+                setNewsletters([]); // Set empty array in case of error
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <section className={styles.section} id="newsletters">
             <h2 className={styles.title}>Newsletters</h2>

@@ -105,7 +105,7 @@ const chatConversation = {
     ]
 };
 
-const MockDataService = {
+const DataService = {
     Init: function () {
         console.log('Mock Data Service Initialized');
         return Promise.resolve();
@@ -147,4 +147,4 @@ const MockDataService = {
     }
 };
 
-export default MockDataService;
+export default DataService;
