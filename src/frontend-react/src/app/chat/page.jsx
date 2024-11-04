@@ -1,7 +1,10 @@
 'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import { AttachFile, Send, ArrowForward, CameraAltOutlined, ArrowUpwardRounded } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
+import DataService from "../../services/MockDataService"; // Mock
+//import DataService from "../../services/DataService";
 
 // Import the styles
 import styles from "./styles.module.css";

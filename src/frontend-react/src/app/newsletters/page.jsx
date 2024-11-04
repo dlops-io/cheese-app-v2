@@ -1,43 +1,34 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import DataService from "../../services/MockDataService"; // Mock
+//import DataService from "../../services/DataService";
 
 // Import the styles
 import styles from "./styles.module.css";
 
-const newsletters = [
-    {
-        id: 1,
-        date: 'September 15, 2024',
-        title: 'Exploring Alpine Cheeses',
-        excerpt: 'Discover the rich traditions of Alpine cheesemaking, from Swiss Gruyère to French Beaufort. Learn how altitude and seasonal grazing practices influence the unique flavors of these mountain cheeses...',
-        readTime: '5 min read',
-        category: 'Traditional Cheese',
-        image: '/assets/alpine-cheese.jpg'
-    },
-    {
-        id: 2,
-        date: 'September 8, 2024',
-        title: 'The Art of Blue Cheese',
-        excerpt: 'Dive into the fascinating world of blue cheeses, from Italian Gorgonzola to French Roquefort. Understand the role of Penicillium roqueforti and how it creates those distinctive blue-green veins...',
-        readTime: '4 min read',
-        category: 'Cheese Science',
-        image: '/assets/blue-cheese.jpg'
-    },
-    {
-        id: 3,
-        date: 'September 1, 2024',
-        title: 'Spanish Cheese Journey',
-        excerpt: 'Take a virtual tour through Spains diverse cheese landscape, from the sharp Manchego of La Mancha to the smoky Idiazábal of the Basque Country...',
-        readTime: '6 min read',
-        category: 'Regional Spotlight',
-        image: '/assets/spanish-cheese.jpg'
-    },
-    // Add more newsletters...
-];
-
 
 export default function NewslettersPage() {
+    // Component States
+    const [newsletters, setNewsletters] = useState([]);
+
+    // Setup Component
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await DataService.GetNewsletters(100);
+                setNewsletters(response.data);
+            } catch (error) {
+                console.error('Error fetching podcasts:', error);
+                setNewsletters([]); // Set empty array in case of error
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <div className={styles.container}>
             {/* Hero Section */}
