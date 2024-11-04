@@ -35,12 +35,35 @@ const recentChats = [
     }
 ];
 
+const exampleChat = {
+    id: 1,
+    title: 'Exploring the World of Cheese Through AI',
+    project: 'formaggio.me',
+    time: '29 minutes ago',
+    messages: [
+        { id: 1, role: 'user', content: 'What are some good cheese pairings for red wine?' },
+        { id: 2, role: 'assistant', content: 'For red wine, I would recommend aged cheeses like Parmigiano-Reggiano, aged Gouda, or Pecorino Romano. The robust flavors complement the wine perfectly.' },
+        { id: 3, role: 'user', content: 'Hello some more questions here...' },
+        { id: 4, role: 'assistant', content: 'Ok some more answers here...' },
+        { id: 5, role: 'user', content: 'Hello some more questions here...' },
+        { id: 6, role: 'assistant', content: 'Ok some more answers here...' },
+        { id: 7, role: 'user', content: 'Hello some more questions here...' },
+        { id: 8, role: 'assistant', content: 'Ok some more answers here...' },
+        { id: 9, role: 'user', content: 'Hello some more questions here...' },
+        { id: 10, role: 'assistant', content: 'Ok some more answers here...' },
+        { id: 11, role: 'user', content: 'Hello some more questions here...' },
+        { id: 12, role: 'assistant', content: 'Ok some more answers here...' },
+    ]
+}
+
 export default function ChatPage() {
     // Component States
     const [hasActiveChat, setHasActiveChat] = useState(false);
-    const [selectedChat, setSelectedChat] = useState(null);
+    const [selectedChat, setSelectedChat] = useState(exampleChat);
     const [message, setMessage] = useState('');
     const textAreaRef = useRef(null);
+    const chatHistoryRef = useRef(null);
+    const [currentChat, setCurrentChat] = useState(null);
 
     const adjustTextAreaHeight = () => {
         const textarea = textAreaRef.current;
@@ -198,26 +221,67 @@ export default function ChatPage() {
                             ))}
                         </div>
                     </div>
-                    {/* Main Chat Area */}
-                    <div className={styles.mainChat}>
-                        <div className={styles.chatMessages}>
-                            {/* Messages will be rendered here */}
-                        </div>
 
-                        {/* Chat Input */}
-                        <div className={styles.chatInputArea}>
-                            <div className={styles.inputWrapper}>
-                                <input
-                                    type="text"
-                                    placeholder="Type your message..."
+                    {/* Main chat area */}
+                    <div className={styles.mainContent}>
+                        {selectedChat && (
+                            <>
+                                {/* Chat history */}
+                                <div className={styles.chatHistory} ref={chatHistoryRef}>
+                                    {selectedChat.messages.map((msg) => (
+                                        <div
+                                            key={msg.id}
+                                            className={`${styles.message} ${styles[msg.role]}`}
+                                        >
+                                            <div className={styles.messageContent}>
+                                                {msg.content}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+
+                        {/* Sticky chat input area */}
+                        <div className={styles.chatInputContainer}>
+                            <div className={styles.textareaWrapper}>
+                                <textarea
+                                    ref={textAreaRef}
                                     className={styles.chatInput}
+                                    placeholder="How can Formaggio help you today?"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleSubmit();
+                                        }
+                                    }}
+                                    rows={1}
                                 />
-                                <button className={styles.attachButton}>
-                                    📎
+                                <button
+                                    className={`${styles.submitButton} ${message.trim() ? styles.active : ''}`}
+                                    onClick={handleSubmit}
+                                    disabled={!message.trim()}
+                                >
+                                    <Send />
                                 </button>
-                                <button className={styles.sendButton}>
-                                    Send
-                                </button>
+                            </div>
+
+                            <div className={styles.inputControls}>
+                                <div className={styles.leftControls}>
+                                    <IconButton aria-label="camera" className={styles.iconButton}>
+                                        <CameraAltOutlined />
+                                    </IconButton>
+                                </div>
+                                <div className={styles.rightControls}>
+                                    <span className={styles.inputTip}>Use shift + return for new line</span>
+                                    <select className={styles.modelSelect}>
+                                        <option>Formaggio Assistant (Default)</option>
+                                        <option>Cheese Expert</option>
+                                        <option>Recipe Helper</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
