@@ -1,42 +1,18 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, use, useEffect } from 'react';
 import { AttachFile, Send, ArrowForward, CameraAltOutlined, ArrowUpwardRounded } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
+import ChatInput from '@/components/chat/ChatInput';
+import ChatHistory from '@/components/chat/ChatHistory';
+import ChatHistorySidebar from '@/components/chat/ChatHistorySidebar';
+import ChatMessage from '@/components/chat/ChatMessage';
 import DataService from "../../services/MockDataService"; // Mock
 //import DataService from "../../services/DataService";
 
 // Import the styles
 import styles from "./styles.module.css";
 
-const recentChats = [
-    {
-        id: 1,
-        title: 'Exploring the World of Cheese Through AI',
-        time: '29 minutes ago'
-    },
-    {
-        id: 2,
-        title: 'Next.js SSR Error: window is not defined',
-        project: null,
-        time: '1 hour ago'
-    },
-    {
-        id: 3,
-        title: 'Rebuilding a Website with Organized Code',
-        time: '3 hours ago'
-    },
-    {
-        id: 4,
-        title: 'Troubleshooting Styles in Next.js React App',
-        time: '21 hours ago'
-    },
-    {
-        id: 5,
-        title: 'Cheese Icon Request',
-        time: '1 day ago'
-    }
-];
 
 const exampleChat = {
     id: 1,
@@ -59,56 +35,31 @@ const exampleChat = {
     ]
 }
 
-export default function ChatPage() {
+export default function ChatPage({ searchParams }) {
+    const params = use(searchParams)
+    const chat_id = params.id;
+    console.log(chat_id);
+
     // Component States
     const [hasActiveChat, setHasActiveChat] = useState(false);
     const [selectedChat, setSelectedChat] = useState(exampleChat);
-    const [message, setMessage] = useState('');
-    const textAreaRef = useRef(null);
-    const chatHistoryRef = useRef(null);
-    const [currentChat, setCurrentChat] = useState(null);
 
-    const adjustTextAreaHeight = () => {
-        const textarea = textAreaRef.current;
-        if (textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-    };
 
     // Setup Component
     useEffect(() => {
-        adjustTextAreaHeight();
-    }, [message]);
+        if (chat_id) {
+            setHasActiveChat(true);
+        } else {
+            setHasActiveChat(false);
+        }
+    }, [chat_id]);
 
     // Handlers
-    const handleMessageChange = (e) => {
-        setMessage(e.target.value);
-    };
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            if (e.shiftKey) {
-                // Shift + Enter: add new line
-                return;
-            } else {
-                // Enter only: submit
-                e.preventDefault();
-                handleSubmit();
-            }
-        }
-    };
-    const handleSubmit = () => {
-        if (message.trim()) {
-            console.log('Submitting message:', message);
-            setMessage('');
-            // Reset textarea height
-            if (textAreaRef.current) {
-                textAreaRef.current.style.height = 'auto';
-            }
+    const newChat = (message) => {
 
-            // Chat details
-            setHasActiveChat(true);
-        }
+    };
+    const appendChat = (message) => {
+
     };
 
     return (
@@ -119,174 +70,34 @@ export default function ChatPage() {
                 <section className={styles.hero}>
                     <div className={styles.heroContent}>
                         <h1>Cheese Assistant 🌟</h1>
-                        {/* Main Chat Input */}
-                        <div className={styles.mainInputContainer}>
-                            <div className={styles.textareaWrapper}>
-                                <textarea
-                                    ref={textAreaRef}
-                                    className={styles.mainInput}
-                                    placeholder="How can Formaggio help you today?"
-                                    value={message}
-                                    onChange={handleMessageChange}
-                                    onKeyDown={handleKeyPress}
-                                    rows={1}
-                                />
-                                <button
-                                    className={`${styles.submitButton} ${message.trim() ? styles.active : ''}`}
-                                    onClick={handleSubmit}
-                                    disabled={!message.trim()}
-                                >
-                                    <Send />
-                                </button>
-                            </div>
-                            <div className={styles.inputControls}>
-                                <div className={styles.leftControls}>
-                                    <IconButton aria-label="camera" className={styles.iconButton}>
-                                        <CameraAltOutlined />
-                                    </IconButton>
-                                </div>
-                                <div className={styles.rightControls}>
-                                    <span className={styles.inputTip}>Use shift + return for new line</span>
-                                    <select className={styles.modelSelect}>
-                                        <option>Formaggio Assistant (Default)</option>
-                                        <option>Cheese Expert</option>
-                                        <option>Recipe Helper</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        {/* Main Chat Input: ChatInput */}
+                        <ChatInput setHasActiveChat={setHasActiveChat} className={styles.heroChatInputContainer}></ChatInput>
                     </div>
                 </section>
             )}
 
-            {/* Chat History Section */}
+            {/* Chat History Section: ChatHistory */}
             {!hasActiveChat && (
-                <div className={styles.recentChats}>
-                    <div className={styles.recentHeader}>
-                        <h2>
-                            <span className={styles.chatIcon}>💭</span>
-                            Your recent chats
-                        </h2>
-                        <button className={styles.viewAllButton}>
-                            View all <ArrowForward />
-                        </button>
-                    </div>
-
-                    <div className={styles.chatGrid}>
-                        {recentChats.map((chat) => (
-                            <div key={chat.id} className={styles.chatCard}>
-                                <h3 className={styles.chatTitle}>{chat.title}</h3>
-                                <span className={styles.chatTime}>{chat.time}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <ChatHistory></ChatHistory>
             )}
 
             {/* Chat Block Header Section */}
             {hasActiveChat && (
-                <div className={styles.chatHeader}>
-
-                </div>
+                <div className={styles.chatHeader}></div>
             )}
             {/* Active Chat Interface */}
             {hasActiveChat && (
                 <div className={styles.chatInterface}>
-                    {/* Chat History Sidebar */}
-                    <div className={styles.sidebar}>
-                        <div className={styles.sidebarHeader}>
-                            <h2>Chat History</h2>
-                            <button
-                                className={styles.newChatButton}
-                                onClick={() => setHasActiveChat(false)}
-                            >
-                                New Chat
-                            </button>
-                        </div>
-
-                        <div className={styles.chatList}>
-                            {/* Sample chat history items */}
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((chat) => (
-                                <div
-                                    key={chat}
-                                    className={`${styles.chatItem} ${selectedChat === chat ? styles.active : ''}`}
-                                    onClick={() => setSelectedChat(chat)}
-                                >
-                                    <div className={styles.chatItemContent}>
-                                        <span className={styles.chatTitle}>
-                                            Chat {chat}
-                                        </span>
-                                        <span className={styles.chatDate}>
-                                            2 hours ago
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    {/* Chat History Sidebar: ChatHistorySidebar */}
+                    <ChatHistorySidebar setHasActiveChat={setHasActiveChat} setSelectedChat={setSelectedChat} chat_id={chat_id}></ChatHistorySidebar>
 
                     {/* Main chat area */}
                     <div className={styles.mainContent}>
-                        {selectedChat && (
-                            <>
-                                {/* Chat history */}
-                                <div className={styles.chatHistory} ref={chatHistoryRef}>
-                                    {selectedChat.messages.map((msg) => (
-                                        <div
-                                            key={msg.id}
-                                            className={`${styles.message} ${styles[msg.role]}`}
-                                        >
-                                            <div className={styles.messageContent}>
-                                                {msg.content}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </>
-                        )}
-
-                        {/* Sticky chat input area */}
-                        <div className={styles.chatInputContainer}>
-                            <div className={styles.textareaWrapper}>
-                                <textarea
-                                    ref={textAreaRef}
-                                    className={styles.chatInput}
-                                    placeholder="How can Formaggio help you today?"
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();
-                                            handleSubmit();
-                                        }
-                                    }}
-                                    rows={1}
-                                />
-                                <button
-                                    className={`${styles.submitButton} ${message.trim() ? styles.active : ''}`}
-                                    onClick={handleSubmit}
-                                    disabled={!message.trim()}
-                                >
-                                    <Send />
-                                </button>
-                            </div>
-
-                            <div className={styles.inputControls}>
-                                <div className={styles.leftControls}>
-                                    <IconButton aria-label="camera" className={styles.iconButton}>
-                                        <CameraAltOutlined />
-                                    </IconButton>
-                                </div>
-                                <div className={styles.rightControls}>
-                                    <span className={styles.inputTip}>Use shift + return for new line</span>
-                                    <select className={styles.modelSelect}>
-                                        <option>Formaggio Assistant (Default)</option>
-                                        <option>Cheese Expert</option>
-                                        <option>Recipe Helper</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        {/* Chat message: ChatMessage */}
+                        <ChatMessage chat_id={chat_id}></ChatMessage>
+                        <div></div>
+                        {/* Sticky chat input area: ChatInput */}
+                        <ChatInput setHasActiveChat={setHasActiveChat} chat_id={chat_id}></ChatInput>
                     </div>
                 </div>
             )}

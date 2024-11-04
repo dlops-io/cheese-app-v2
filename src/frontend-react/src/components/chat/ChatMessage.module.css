@@ -1,0 +1,93 @@
+.chatHistory {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    background: #2C2C2C;
+}
+
+.chatTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-bottom: 1px solid #333;
+}
+
+.chatTitleIcon {
+    display: flex;
+    align-items: center;
+    color: #FFFFFF;
+}
+
+.chatTitleText {
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+.message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    position: relative;
+}
+
+.messageIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.message.user {
+    background: #444;
+    margin-left: auto;
+    flex-direction: row-reverse;
+}
+
+.message.user .messageIcon {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.message.assistant {
+    background: #363636;
+    margin-right: auto;
+}
+
+.message.assistant .messageIcon {
+    background: rgba(255, 215, 0, 0.15);
+    /* Subtle gold background */
+}
+
+.messageContent {
+    color: #FFFFFF;
+    font-size: 15px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+/* Time indicator styles */
+.messageTime {
+    position: absolute;
+    bottom: -20px;
+    font-size: 12px;
+    color: #888;
+}
+
+.user .messageTime {
+    right: 0;
+}
+
+.assistant .messageTime {
+    left: 0;
+}
