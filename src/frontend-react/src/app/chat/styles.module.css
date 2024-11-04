@@ -103,7 +103,7 @@
 .iconButton {
     background: transparent;
     border: none;
-    color: #888888;
+    color: #ffffff;
     padding: 8px;
     cursor: pointer;
     border-radius: 6px;
@@ -208,6 +208,83 @@
     font-size: 14px;
 }
 
+
+
+.textareaWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.mainInput {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    font-size: 18px;
+    padding: 10px;
+    padding-right: 50px;
+    /* Make room for submit button */
+    resize: none;
+    outline: none;
+    font-family: inherit;
+    min-height: 24px;
+    max-height: 400px;
+    /* Optional: set a max height if desired */
+    overflow-y: hidden;
+    /* Hide scrollbar as we're auto-expanding */
+    line-height: 1.5;
+}
+
+.mainInput::placeholder {
+    color: #888888;
+}
+
+.submitButton {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.submitButton.active {
+    color: #fff;
+    background: #444;
+}
+
+.submitButton.active:hover {
+    background: #555;
+    transform: scale(1.05);
+}
+
+.submitButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.inputTip {
+    color: #888;
+    font-size: 14px;
+    margin-right: 16px;
+}
+
+.inputControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 1px solid #444444;
+    padding-top: 20px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .welcome h1 {
@@ -225,9 +302,16 @@
 
     .rightControls {
         width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
 
     .modelSelect {
         width: 100%;
+    }
+
+    .inputTip {
+        margin-right: 0;
     }
 }

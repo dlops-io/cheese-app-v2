@@ -11,7 +11,7 @@ const navItems = [
     { name: 'About', path: '/', sectionId: 'about', icon: <Info fontSize="small" /> },
     { name: 'Podcasts', path: '/podcasts', sectionId: 'podcasts', icon: <Podcasts fontSize="small" /> },
     { name: 'Newsletters', path: '/newsletters', sectionId: 'newsletters', icon: <Email fontSize="small" /> },
-    { name: 'Chat', path: '/chat', sectionId: '', icon: <SmartToy fontSize="small" /> }
+    { name: 'Cheese Assistant', path: '/chat', sectionId: '', icon: <SmartToy fontSize="small" /> }
 ];
 
 export default function Header() {
