@@ -180,7 +180,7 @@ export default function ChatPage() {
 
                         <div className={styles.chatList}>
                             {/* Sample chat history items */}
-                            {[1, 2, 3].map((chat) => (
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((chat) => (
                                 <div
                                     key={chat}
                                     className={`${styles.chatItem} ${selectedChat === chat ? styles.active : ''}`}
