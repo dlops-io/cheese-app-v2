@@ -65,105 +65,410 @@ const recentChats = [
     {
         "id": "4c4f1ad4-99db-4c62-b0ec-86cc353fc586",
         "title": "What is your take on the debate between raw milk versus pasteurized cheese aging processes and their impact on flavor development?",
-        "time": "29 minutes ago"
+        "dts": 1730782820,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
         "id": "b959d7ad-f11b-4c53-8655-8d9d3f8e474a",
         "title": "Which lesser-known Alpine cheeses would you recommend to someone who loves Gruyère but wants to explore beyond the classics?",
-        "time": "27 minutes ago"
+        "dts": 1730764820,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
         "id": "cbe312e2-3b39-4675-bcb4-d2a25d2d880b",
         "title": "How do you identify a perfectly ripe Epoisses, and what's the ideal timeframe for consuming it once it reaches peak ripeness?",
-        "time": "25 minutes ago"
+        "dts": 1730724320,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
         "id": "cbe312e2-3b12-4675-bcb4-d2a25d2d8834",
         "title": "Can you explain the specific cave microflora that contributes to the distinct blue-gray rind of Valençay?",
-        "time": "24 minutes ago"
+        "dts": 1730637920,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
         "id": "646b23ab-072b-41bf-997c-d8c539023f38",
         "title": "What's your opinion on the recent trend of washing cheese rinds with non-traditional liquids like craft beer or botanical spirits?",
-        "time": "22 minutes ago"
+        "dts": 1730551520,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
         "id": "abc46c4c-10f2-4ef8-9bea-88bc80617dc9",
         "title": "How does the seasonal variation in goat's milk affect the texture and flavor profile of fresh chèvre throughout the year?",
-        "time": "20 minutes ago"
+        "dts": 1730292320,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "358c0283-e432-4469-9300-7ad9109d81ee",
         "title": "Which traditional Welsh cheeses do you think deserve more international recognition?",
-        "time": "18 minutes ago"
+        "dts": 1730205920,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "30ab2faa-cf72-4443-b885-57307e17a30b",
         "title": "What are your thoughts on the optimal cellar humidity levels for aging washed-rind cheeses versus bloomy rinds?",
-        "time": "16 minutes ago"
+        "dts": 1730119520,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "358c0283-e432-4469-qwer-7ad9109d81ee",
         "title": "How do you feel about the modernization of traditional PDO cheese-making methods to meet increasing demand?",
-        "time": "15 minutes ago"
+        "dts": 1730033120,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "2d1552e0-ec4f-4c7a-b115-a75b06eae09b",
         "title": "Could you explain the role of thermophilic versus mesophilic cultures in cheese development?",
-        "time": "13 minutes ago"
+        "dts": 1729774920,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "64f9212f-fbde-477c-b8c0-dfbbf112b4d5",
         "title": "What's your favorite cheese and wine pairing that challenges conventional wisdom?",
-        "time": "11 minutes ago"
+        "dts": 1729773920,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "64f9212f-abcd-477c-b8c0-dfbbf112b4d5",
         "title": "How do you see climate change affecting traditional cheese-making regions and their signature products?",
-        "time": "9 minutes ago"
+        "dts": 1729601120,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "64f9212f-fbde-477c-aswe-dfbbf112b4d5",
         "title": "Which emerging cheese-making regions should we be paying attention to over the next decade?",
-        "time": "7 minutes ago"
+        "dts": 1729341920,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "ab352548-aad5-498e-8532-fa66e41f042d",
         "title": "What's your stance on the use of wooden boards versus plastic during the aging process?",
-        "time": "5 minutes ago"
+        "dts": 1729169120,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     },
     {
-        "id": uuid(),
+        "id": "ab352548-aad5-opwe-8532-fa66e41f042d",
         "title": "Can you recommend some interesting cheese pairings specifically for oxidative-style sherries?",
-        "time": "3 minutes ago"
+        "dts": 1728996320,
+        "messages": [
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'What are the best cheeses for a cheese board?'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
+            },
+            {
+                "id": uuid(),
+                role: 'user',
+                content: 'Some other question....'
+            },
+            {
+                "id": uuid(),
+                role: 'assistant',
+                content: 'Some other questions answer....'
+            },
+        ]
     }
 ];
 
-// Sample chat conversation data
-const chatConversation = {
-    messages: [
-        {
-            "id": uuid(),
-            role: 'user',
-            content: 'What are the best cheeses for a cheese board?'
-        },
-        {
-            "id": uuid(),
-            role: 'assistant',
-            content: 'For a well-balanced cheese board, I recommend including: 1) A soft cheese like Brie or Camembert, 2) A hard aged cheese like Parmigiano-Reggiano, 3) A blue cheese like Roquefort, and 4) A semi-firm cheese like Gouda or Manchego.'
-        },
-        {
-            "id": uuid(),
-            role: 'user',
-            content: 'Some other question....'
-        },
-        {
-            "id": uuid(),
-            role: 'assistant',
-            content: 'Some other questions answer....'
-        },
-    ]
-};
 
 const DataService = {
     Init: function () {
@@ -182,28 +487,81 @@ const DataService = {
     },
 
     GetChats: async function (limit) {
-        const limitedChats = limit ? recentChats.slice(0, limit) : recentChats;
+        // const limitedChats = limit ? recentChats.slice(0, limit) : recentChats;
+        // return Promise.resolve({ data: limitedChats });
+
+        // Create a copy of recentChats to avoid modifying the original array
+        const sortedChats = [...recentChats].sort((a, b) => {
+            // Sort in descending order (most recent first)
+            return b.dts - a.dts;
+        }
+        );
+
+        const limitedChats = limit ? sortedChats.slice(0, limit) : sortedChats;
         return Promise.resolve({ data: limitedChats });
     },
 
     GetChat: async function (id) {
-        let chatConv = recentChats.find(chat => chat.id === id);
-        chatConversation["id"] = id;
-        chatConversation["title"] = chatConv["title"];
-        return Promise.resolve({ data: chatConversation });
+        var chat_response = recentChats.find(chat => chat.id === id);
+        return Promise.resolve({ data: chat_response });
     },
-
-    ChatWithLLM: async function (id, chat_data) {
+    StartChatWithLLM: async function (message) {
         // Simulate a delay to mimic API response time
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Generate unique id
+        var id = uuid();
+        var now = Date.now();
+        now = parseInt(now / 1000);
 
         // Mock response
-        const response = {
-            role: 'assistant',
-            content: 'This is a mock response to your message: ' + chat_data.message
-        };
+        var chat_response = {
+            "id": id,
+            "title": message,
+            "dts": now,
+            "messages": [
+                {
+                    "id": uuid(),
+                    role: 'user',
+                    content: message
+                },
+                {
+                    "id": uuid(),
+                    role: 'assistant',
+                    content: 'This is a response to your message: ' + message
+                }
+            ]
+        }
 
-        return Promise.resolve({ data: response });
+        // add to recent chats
+        recentChats.push(chat_response);
+
+        console.log(chat_response);
+        return Promise.resolve({ data: chat_response });
+    },
+    ChatWithLLM: async function (id, message) {
+        // Simulate a delay to mimic API response time
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Get chat
+        var chat_response = recentChats.find(chat => chat.id === id);
+        var now = Date.now();
+        now = parseInt(now / 1000);
+        chat_response["dts"] = now;
+
+        chat_response["messages"].push({
+            "id": uuid(),
+            role: 'user',
+            content: message
+        })
+
+        chat_response["messages"].push({
+            "id": uuid(),
+            role: 'assistant',
+            content: 'This is a response to your message: ' + message
+        })
+
+        return Promise.resolve({ data: chat_response });
     }
 };
 

@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DataService from "../../services/MockDataService"; // Mock
 //import DataService from "../../services/DataService";
+import { formatRelativeTime } from "../../services/Common";
 
 // Styles
 import styles from './ChatHistorySidebar.module.css';
 
 export default function ChatHistorySidebar({
-    setHasActiveChat,
     chat_id
 }) {
     // Component States
@@ -54,7 +54,7 @@ export default function ChatHistorySidebar({
                                 {item.title}
                             </span>
                             <span className={styles.chatDate}>
-                                {item.time}
+                                {formatRelativeTime(item.dts)}
                             </span>
                         </div>
                     </div>

@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import styles from './ChatInput.module.css';
 
 export default function ChatInput({
-    addMessage
+    onSendMessage
 }) {
     // Component States
     const [message, setMessage] = useState('');
@@ -53,7 +53,7 @@ export default function ChatInput({
             }
 
             // Chat details
-            addMessage(true);
+            onSendMessage(message);
         }
     };
 

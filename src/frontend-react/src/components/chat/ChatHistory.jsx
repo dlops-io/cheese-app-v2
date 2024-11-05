@@ -6,6 +6,7 @@ import { ArrowForward } from '@mui/icons-material';
 import HistoryIcon from '@mui/icons-material/History';
 import DataService from "../../services/MockDataService"; // Mock
 //import DataService from "../../services/DataService";
+import { formatRelativeTime } from "../../services/Common";
 
 // Styles
 import styles from './ChatHistory.module.css';
@@ -48,7 +49,9 @@ export default function ChatHistory({
                 {chatHistory.map((item) => (
                     <div key={item.id} className={styles.chatCard} onClick={() => router.push('/chat?id=' + item.id)}>
                         <h3 className={styles.chatTitle}>{item.title}</h3>
-                        <span className={styles.chatTime}>{item.time}</span>
+                        <span className={styles.chatTime}>
+                            {formatRelativeTime(item.dts)}
+                        </span>
                     </div>
                 ))}
             </div>

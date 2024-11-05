@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, use, useEffect } from 'react';
-import { AttachFile, Send, ArrowForward, CameraAltOutlined, ArrowUpwardRounded } from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
 import IconButton from '@mui/material/IconButton';
 import ChatInput from '@/components/chat/ChatInput';
 import ChatHistory from '@/components/chat/ChatHistory';
@@ -19,8 +19,11 @@ export default function ChatPage({ searchParams }) {
     console.log(chat_id);
 
     // Component States
+    const [chatId, setChatId] = useState(params.id);
     const [hasActiveChat, setHasActiveChat] = useState(false);
     const [chat, setChat] = useState(null);
+    const [refreshKey, setRefreshKey] = useState(0);
+    const router = useRouter();
 
     const fetchChat = async (id) => {
         try {
@@ -47,10 +50,49 @@ export default function ChatPage({ searchParams }) {
 
     // Handlers
     const newChat = (message) => {
+        console.log("New Chat Message:" + message);
+        // Start a new chat and submit to LLM
+        const startChat = async (message) => {
+            try {
+                const response = await DataService.StartChatWithLLM(message);
+                console.log(response.data);
+                setChat(response.data);
+                setChatId(response.data["id"]);
+                setHasActiveChat(true);
+                router.push('/chat?id=' + response.data["id"]);
+            } catch (error) {
+                console.error('Error fetching chat:', error);
+                setChat(null);
+                setChatId(null);
+                setHasActiveChat(false);
+                router.push('/chat')
+            }
+        };
+        startChat(message);
 
     };
     const appendChat = (message) => {
+        console.log("Append Chat Message:" + message);
+        // Append message and submit to LLM
 
+        const continueChat = async (id, message) => {
+            try {
+                const response = await DataService.ChatWithLLM(id, message);
+                console.log(response.data);
+                setChat(response.data);
+                setHasActiveChat(true);
+                forceRefresh();
+            } catch (error) {
+                console.error('Error fetching chat:', error);
+                setChat(null);
+                setHasActiveChat(false);
+            }
+        };
+        continueChat(chat_id, message);
+    };
+    // Force re-render by updating the key
+    const forceRefresh = () => {
+        setRefreshKey(prevKey => prevKey + 1);
     };
 
     return (
@@ -62,7 +104,7 @@ export default function ChatPage({ searchParams }) {
                     <div className={styles.heroContent}>
                         <h1>Cheese Assistant 🌟</h1>
                         {/* Main Chat Input: ChatInput */}
-                        <ChatInput addMessage={newChat} className={styles.heroChatInputContainer}></ChatInput>
+                        <ChatInput onSendMessage={newChat} className={styles.heroChatInputContainer}></ChatInput>
                     </div>
                 </section>
             )}
@@ -80,14 +122,14 @@ export default function ChatPage({ searchParams }) {
             {hasActiveChat && (
                 <div className={styles.chatInterface}>
                     {/* Chat History Sidebar: ChatHistorySidebar */}
-                    <ChatHistorySidebar setHasActiveChat={setHasActiveChat} chat={chat}></ChatHistorySidebar>
+                    <ChatHistorySidebar chat_id={chat_id}></ChatHistorySidebar>
 
                     {/* Main chat area */}
                     <div className={styles.mainContent}>
                         {/* Chat message: ChatMessage */}
-                        <ChatMessage chat={chat}></ChatMessage>
+                        <ChatMessage chat={chat} key={refreshKey}></ChatMessage>
                         {/* Sticky chat input area: ChatInput */}
-                        <ChatInput addMessage={appendChat} chat={chat}></ChatInput>
+                        <ChatInput onSendMessage={appendChat} chat={chat}></ChatInput>
                     </div>
                 </div>
             )}
