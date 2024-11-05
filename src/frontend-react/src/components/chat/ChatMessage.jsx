@@ -10,10 +10,9 @@ import DataService from "../../services/MockDataService"; // Mock
 import styles from './ChatMessage.module.css';
 
 export default function ChatMessage({
-    chat_id
+    chat
 }) {
     // Component States
-    const [chat, setChat] = useState(null);
     const chatHistoryRef = useRef(null);
 
     const fetchChat = async (id) => {
@@ -29,13 +28,6 @@ export default function ChatMessage({
     };
 
     // Setup Component
-    useEffect(() => {
-        if (chat_id) {
-            fetchChat(chat_id);
-        } else {
-            setChat(null);
-        }
-    }, [chat_id]);
     // Auto-scroll to bottom of chat history when new messages are added
     useEffect(() => {
         if (chatHistoryRef.current) {

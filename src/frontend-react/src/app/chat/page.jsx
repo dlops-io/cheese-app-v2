@@ -13,28 +13,6 @@ import DataService from "../../services/MockDataService"; // Mock
 // Import the styles
 import styles from "./styles.module.css";
 
-
-const exampleChat = {
-    id: 1,
-    title: 'Exploring the World of Cheese Through AI',
-    project: 'formaggio.me',
-    time: '29 minutes ago',
-    messages: [
-        { id: 1, role: 'user', content: 'What are some good cheese pairings for red wine?' },
-        { id: 2, role: 'assistant', content: 'For red wine, I would recommend aged cheeses like Parmigiano-Reggiano, aged Gouda, or Pecorino Romano. The robust flavors complement the wine perfectly.' },
-        { id: 3, role: 'user', content: 'Hello some more questions here...' },
-        { id: 4, role: 'assistant', content: 'Ok some more answers here...' },
-        { id: 5, role: 'user', content: 'Hello some more questions here...' },
-        { id: 6, role: 'assistant', content: 'Ok some more answers here...' },
-        { id: 7, role: 'user', content: 'Hello some more questions here...' },
-        { id: 8, role: 'assistant', content: 'Ok some more answers here...' },
-        { id: 9, role: 'user', content: 'Hello some more questions here...' },
-        { id: 10, role: 'assistant', content: 'Ok some more answers here...' },
-        { id: 11, role: 'user', content: 'Hello some more questions here...' },
-        { id: 12, role: 'assistant', content: 'Ok some more answers here...' },
-    ]
-}
-
 export default function ChatPage({ searchParams }) {
     const params = use(searchParams)
     const chat_id = params.id;
@@ -42,14 +20,27 @@ export default function ChatPage({ searchParams }) {
 
     // Component States
     const [hasActiveChat, setHasActiveChat] = useState(false);
-    const [selectedChat, setSelectedChat] = useState(exampleChat);
+    const [chat, setChat] = useState(null);
 
+    const fetchChat = async (id) => {
+        try {
+            setChat(null);
+            const response = await DataService.GetChat(id);
+            setChat(response.data);
+            console.log(chat);
+        } catch (error) {
+            console.error('Error fetching chat:', error);
+            setChat(null);
+        }
+    };
 
     // Setup Component
     useEffect(() => {
         if (chat_id) {
+            fetchChat(chat_id);
             setHasActiveChat(true);
         } else {
+            setChat(null);
             setHasActiveChat(false);
         }
     }, [chat_id]);
@@ -71,7 +62,7 @@ export default function ChatPage({ searchParams }) {
                     <div className={styles.heroContent}>
                         <h1>Cheese Assistant 🌟</h1>
                         {/* Main Chat Input: ChatInput */}
-                        <ChatInput setHasActiveChat={setHasActiveChat} className={styles.heroChatInputContainer}></ChatInput>
+                        <ChatInput addMessage={newChat} className={styles.heroChatInputContainer}></ChatInput>
                     </div>
                 </section>
             )}
@@ -89,15 +80,14 @@ export default function ChatPage({ searchParams }) {
             {hasActiveChat && (
                 <div className={styles.chatInterface}>
                     {/* Chat History Sidebar: ChatHistorySidebar */}
-                    <ChatHistorySidebar setHasActiveChat={setHasActiveChat} setSelectedChat={setSelectedChat} chat_id={chat_id}></ChatHistorySidebar>
+                    <ChatHistorySidebar setHasActiveChat={setHasActiveChat} chat={chat}></ChatHistorySidebar>
 
                     {/* Main chat area */}
                     <div className={styles.mainContent}>
                         {/* Chat message: ChatMessage */}
-                        <ChatMessage chat_id={chat_id}></ChatMessage>
-                        <div></div>
+                        <ChatMessage chat={chat}></ChatMessage>
                         {/* Sticky chat input area: ChatInput */}
-                        <ChatInput setHasActiveChat={setHasActiveChat} chat_id={chat_id}></ChatInput>
+                        <ChatInput addMessage={appendChat} chat={chat}></ChatInput>
                     </div>
                 </div>
             )}

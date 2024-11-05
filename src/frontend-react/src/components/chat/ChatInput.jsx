@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import styles from './ChatInput.module.css';
 
 export default function ChatInput({
-    setHasActiveChat
+    addMessage
 }) {
     // Component States
     const [message, setMessage] = useState('');
@@ -53,7 +53,7 @@ export default function ChatInput({
             }
 
             // Chat details
-            //setHasActiveChat(true);
+            addMessage(true);
         }
     };
 

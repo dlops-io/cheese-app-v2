@@ -10,7 +10,6 @@ import styles from './ChatHistorySidebar.module.css';
 
 export default function ChatHistorySidebar({
     setHasActiveChat,
-    setSelectedChat,
     chat_id
 }) {
     // Component States
@@ -38,7 +37,7 @@ export default function ChatHistorySidebar({
                 <h2>Chat History</h2>
                 <button
                     className={styles.newChatButton}
-                    onClick={() => setHasActiveChat(false)}
+                    onClick={() => router.push('/chat')}
                 >
                     New Chat
                 </button>
