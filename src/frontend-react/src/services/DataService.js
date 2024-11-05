@@ -1,4 +1,4 @@
-import { BASE_API_URL } from "./Common";
+import { BASE_API_URL, uuid } from "./Common";
 import axios from 'axios';
 
 const DataService = {
@@ -17,8 +17,18 @@ const DataService = {
     GetChat: async function (id) {
         return await axios.get(BASE_API_URL + "/chat/" + id);
     },
-    ChatWithLLM: async function (id, chat_data) {
-        return await axios.post(BASE_API_URL + "/chat/" + id, chat_data);
+    StartChatWithLLM: async function (message) {
+        // Generate unique id
+        var id = uuid();
+        var now = Date.now();
+        now = parseInt(now / 1000);
+        message["id"] = uuid();
+
+        return await axios.post(BASE_API_URL + "/chat/" + id, message);
+    },
+    ChatWithLLM: async function (id, message) {
+        message["id"] = uuid();
+        return await axios.post(BASE_API_URL + "/chat/" + id, message);
     },
 }
 
