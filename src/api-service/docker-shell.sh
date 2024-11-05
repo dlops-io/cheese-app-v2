@@ -9,6 +9,8 @@ export BASE_DIR=$(pwd)
 export SECRETS_DIR=$(pwd)/../../../secrets/
 export PERSISTENT_DIR=$(pwd)/../../../persistent-folder/
 export GCS_BUCKET_NAME="cheese-app-models"
+export CHROMADB_HOST="cheese-app-vector-db"
+export CHROMADB_PORT=8000
 
 # Create the network if we don't have it yet
 docker network inspect cheese-app-network >/dev/null 2>&1 || docker network create cheese-app-network

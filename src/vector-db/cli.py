@@ -22,13 +22,13 @@ import agent_tools
 # Setup
 GCP_PROJECT = os.environ["GCP_PROJECT"]
 GCP_LOCATION = "us-central1"
+CHROMADB_HOST = os.environ["CHROMADB_HOST"]
+CHROMADB_PORT = os.environ["CHROMADB_PORT"]
 EMBEDDING_MODEL = "text-embedding-004"
 EMBEDDING_DIMENSION = 256
 GENERATIVE_MODEL = "gemini-1.5-flash-001"
 INPUT_FOLDER = "input-datasets"
 OUTPUT_FOLDER = "outputs"
-CHROMADB_HOST = "llm-rag-chromadb"
-CHROMADB_PORT = 8000
 vertexai.init(project=GCP_PROJECT, location=GCP_LOCATION)
 # https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text-embeddings-api#python
 embedding_model = TextEmbeddingModel.from_pretrained(EMBEDDING_MODEL)
