@@ -10,6 +10,9 @@ export SECRETS_DIR=$(pwd)/../../../secrets/
 export PERSISTENT_DIR=$(pwd)/../../../persistent-folder/
 export GCS_BUCKET_NAME="cheese-app-models"
 
+# Create the network if we don't have it yet
+docker network inspect cheese-app-network >/dev/null 2>&1 || docker network create cheese-app-network
+
 # Build the image based on the Dockerfile
 #docker build -t $IMAGE_NAME -f Dockerfile .
 # M1/2 chip macs use this line
@@ -24,4 +27,5 @@ docker run --rm --name $IMAGE_NAME -ti \
 -e DEV=1 \
 -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/ml-workflow.json \
 -e GCS_BUCKET_NAME=$GCS_BUCKET_NAME \
+--network cheese-app-network \
 $IMAGE_NAME
