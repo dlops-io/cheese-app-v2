@@ -50,7 +50,7 @@ export default function ChatPage({ searchParams }) {
 
     // Handlers
     const newChat = (message) => {
-        console.log("New Chat Message:" + message);
+        console.log(message);
         // Start a new chat and submit to LLM
         const startChat = async (message) => {
             try {
@@ -72,7 +72,7 @@ export default function ChatPage({ searchParams }) {
 
     };
     const appendChat = (message) => {
-        console.log("Append Chat Message:" + message);
+        console.log(message);
         // Append message and submit to LLM
 
         const continueChat = async (id, message) => {

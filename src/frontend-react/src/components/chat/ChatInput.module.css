@@ -113,3 +113,41 @@
     font-size: 14px;
     margin-right: 16px;
 }
+
+.hiddenFileInput {
+    display: none;
+}
+
+.imagePreview {
+    position: relative;
+    margin-bottom: 12px;
+    display: inline-block;
+}
+
+.imagePreview img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.removeImageBtn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #444;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.removeImageBtn:hover {
+    background: #555;
+}

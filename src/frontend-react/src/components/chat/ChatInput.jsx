@@ -12,7 +12,9 @@ export default function ChatInput({
 }) {
     // Component States
     const [message, setMessage] = useState('');
+    const [selectedImage, setSelectedImage] = useState(null);
     const textAreaRef = useRef(null);
+    const fileInputRef = useRef(null);
 
     const adjustTextAreaHeight = () => {
         const textarea = textAreaRef.current;
@@ -44,21 +46,84 @@ export default function ChatInput({
         }
     };
     const handleSubmit = () => {
-        if (message.trim()) {
+        // if (message.trim()) {
+        //     console.log('Submitting message:', message);
+        //     setMessage('');
+        //     // Reset textarea height
+        //     if (textAreaRef.current) {
+        //         textAreaRef.current.style.height = 'auto';
+        //     }
+
+        //     // Chat details
+        //     onSendMessage(message);
+        // }
+        if (message.trim() || selectedImage) {
             console.log('Submitting message:', message);
+            const newMessage = {
+                role: 'user',
+                content: message.trim(),
+                image: selectedImage?.preview || null
+            };
+
+            // Send the message
+            onSendMessage(newMessage);
+
+            // Reset
             setMessage('');
-            // Reset textarea height
+            setSelectedImage(null);
             if (textAreaRef.current) {
                 textAreaRef.current.style.height = 'auto';
             }
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+    const handleImageClick = () => {
+        fileInputRef.current?.click();
+    };
+    const handleImageChange = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5000000) { // 5MB limit
+                alert('File size should be less than 5MB');
+                return;
+            }
 
-            // Chat details
-            onSendMessage(message);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage({
+                    file: file,
+                    preview: reader.result
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const removeImage = () => {
+        setSelectedImage(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
         }
     };
 
     return (
         <div className={styles.chatInputContainer}>
+            {selectedImage && (
+                <div className={styles.imagePreview}>
+                    <img
+                        src={selectedImage.preview}
+                        alt="Preview"
+                    />
+                    <button
+                        className={styles.removeImageBtn}
+                        onClick={removeImage}
+                    >
+                        ×
+                    </button>
+                </div>
+            )}
             <div className={styles.textareaWrapper}>
                 <textarea
                     ref={textAreaRef}
@@ -77,14 +142,21 @@ export default function ChatInput({
                 <button
                     className={`${styles.submitButton} ${message.trim() ? styles.active : ''}`}
                     onClick={handleSubmit}
-                    disabled={!message.trim()}
+                    disabled={!message.trim() && !selectedImage}
                 >
                     <Send />
                 </button>
             </div>
             <div className={styles.inputControls}>
                 <div className={styles.leftControls}>
-                    <IconButton aria-label="camera" className={styles.iconButton}>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        className={styles.hiddenFileInput}
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+                    <IconButton aria-label="camera" className={styles.iconButton} onClick={handleImageClick}>
                         <CameraAltOutlined />
                     </IconButton>
                 </div>

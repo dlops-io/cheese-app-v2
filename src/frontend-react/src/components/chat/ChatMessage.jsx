@@ -69,7 +69,15 @@ export default function ChatMessage({
                             )}
                         </div>
                         <div className={styles.messageContent}>
-                            {msg.content}
+                            {msg.image && (
+                                <div className={styles.messageImage}>
+                                    <img
+                                        src={msg.image}
+                                        alt="Chat Image"
+                                    />
+                                </div>
+                            )}
+                            {msg.content && <div>{msg.content}</div>}
                         </div>
                         {msg.timestamp && (
                             <span className={styles.messageTime}>
