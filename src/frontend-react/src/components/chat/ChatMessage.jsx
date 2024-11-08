@@ -13,7 +13,8 @@ import DataService from "../../services/DataService";
 import styles from './ChatMessage.module.css';
 
 export default function ChatMessage({
-    chat
+    chat,
+    isTyping
 }) {
     // Component States
     const chatHistoryRef = useRef(null);
@@ -36,7 +37,7 @@ export default function ChatMessage({
         if (chatHistoryRef.current) {
             chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
         }
-    }, [chat]);
+    }, [chat, isTyping]);
 
     // Helper function to format time
     const formatTime = (timestamp) => {
@@ -80,7 +81,29 @@ export default function ChatMessage({
                                     />
                                 </div>
                             )}
-                            {msg.content && <div>{msg.content}</div>}
+                            {msg.content && (
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    rehypePlugins={[rehypeRaw]}
+                                    components={{
+                                        // Custom styling for elements
+                                        a: ({ node, ...props }) => (
+                                            <a className={styles.link} {...props} target="_blank" rel="noopener noreferrer" />
+                                        ),
+                                        ul: ({ node, ...props }) => (
+                                            <ul className={styles.list} {...props} />
+                                        ),
+                                        ol: ({ node, ...props }) => (
+                                            <ol className={styles.list} {...props} />
+                                        ),
+                                        blockquote: ({ node, ...props }) => (
+                                            <blockquote className={styles.blockquote} {...props} />
+                                        ),
+                                    }}
+                                >
+                                    {msg.content}
+                                </ReactMarkdown>
+                            )}
                         </div>
                         {msg.timestamp && (
                             <span className={styles.messageTime}>
@@ -89,6 +112,19 @@ export default function ChatMessage({
                         )}
                     </div>
                 ))}
+
+                {/* Typing indicator */}
+                {isTyping && (
+                    <div className={`${styles.message} ${styles.assistant}`}>
+                        <div className={styles.messageContent}>
+                            <div className={styles.typingIndicator}>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     )

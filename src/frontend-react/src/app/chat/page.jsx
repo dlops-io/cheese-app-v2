@@ -9,6 +9,7 @@ import ChatHistorySidebar from '@/components/chat/ChatHistorySidebar';
 import ChatMessage from '@/components/chat/ChatMessage';
 //import DataService from "../../services/MockDataService"; // Mock
 import DataService from "../../services/DataService";
+import { uuid } from "../../services/Common";
 
 // Import the styles
 import styles from "./styles.module.css";
@@ -23,6 +24,7 @@ export default function ChatPage({ searchParams }) {
     const [hasActiveChat, setHasActiveChat] = useState(false);
     const [chat, setChat] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [isTyping, setIsTyping] = useState(false);
     const router = useRouter();
 
     const fetchChat = async (id) => {
@@ -48,20 +50,46 @@ export default function ChatPage({ searchParams }) {
         }
     }, [chat_id]);
 
+    function tempChatMessage(message) {
+        // Set temp values
+        message["id"] = uuid();
+        message["role"] = 'user';
+        if (chat) {
+            // Append message
+            var temp_chat = { ...chat };
+            temp_chat["messages"].push(message);
+        } else {
+            var temp_chat = {
+                "messages": [message]
+            }
+            return temp_chat;
+        }
+    }
+
     // Handlers
     const newChat = (message) => {
         console.log(message);
         // Start a new chat and submit to LLM
         const startChat = async (message) => {
             try {
+                // Show typing indicator
+                setIsTyping(true);
+                setHasActiveChat(true);
+                setChat(tempChatMessage(message)); // Show the user input message while LLM is invoked
+
+                // Submit chat
                 const response = await DataService.StartChatWithLLM(message);
                 console.log(response.data);
+
+                // Hide typing indicator and add response
+                setIsTyping(false);
+
                 setChat(response.data);
                 setChatId(response.data["chat_id"]);
-                setHasActiveChat(true);
                 router.push('/chat?id=' + response.data["chat_id"]);
             } catch (error) {
                 console.error('Error fetching chat:', error);
+                setIsTyping(false);
                 setChat(null);
                 setChatId(null);
                 setHasActiveChat(false);
@@ -77,13 +105,23 @@ export default function ChatPage({ searchParams }) {
 
         const continueChat = async (id, message) => {
             try {
+                // Show typing indicator
+                setIsTyping(true);
+                setHasActiveChat(true);
+                tempChatMessage(message);
+
+                // Submit chat
                 const response = await DataService.ContinueChatWithLLM(id, message);
                 console.log(response.data);
+
+                // Hide typing indicator and add response
+                setIsTyping(false);
+
                 setChat(response.data);
-                setHasActiveChat(true);
                 forceRefresh();
             } catch (error) {
                 console.error('Error fetching chat:', error);
+                setIsTyping(false);
                 setChat(null);
                 setHasActiveChat(false);
             }
@@ -127,7 +165,7 @@ export default function ChatPage({ searchParams }) {
                     {/* Main chat area */}
                     <div className={styles.mainContent}>
                         {/* Chat message: ChatMessage */}
-                        <ChatMessage chat={chat} key={refreshKey}></ChatMessage>
+                        <ChatMessage chat={chat} key={refreshKey} isTyping={isTyping}></ChatMessage>
                         {/* Sticky chat input area: ChatInput */}
                         <ChatInput onSendMessage={appendChat} chat={chat}></ChatInput>
                     </div>
