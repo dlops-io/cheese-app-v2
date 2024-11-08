@@ -8,6 +8,7 @@ export IMAGE_NAME="cheese-app-api-service"
 export BASE_DIR=$(pwd)
 export SECRETS_DIR=$(pwd)/../../../secrets/
 export PERSISTENT_DIR=$(pwd)/../../../persistent-folder/
+export GCP_PROJECT="ac215-project" # CHANGE TO YOUR PROJECT ID
 export GCS_BUCKET_NAME="cheese-app-models"
 export CHROMADB_HOST="cheese-app-vector-db"
 export CHROMADB_PORT=8000
@@ -28,6 +29,7 @@ docker run --rm --name $IMAGE_NAME -ti \
 -p 9000:9000 \
 -e DEV=1 \
 -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/ml-workflow.json \
+-e GCP_PROJECT=$GCP_PROJECT \
 -e GCS_BUCKET_NAME=$GCS_BUCKET_NAME \
 --network cheese-app-network \
 $IMAGE_NAME
