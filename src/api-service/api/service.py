@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from api.routers import llm_chat
 
 # Setup FastAPI app
 app = FastAPI(title="API Server", description="API Server", version="v1")
@@ -18,3 +19,6 @@ app.add_middleware(
 @app.get("/")
 async def get_index():
     return {"message": "Welcome to AC215"}
+
+# Additional routers here
+app.include_router(llm_chat.router, prefix="/llm")
