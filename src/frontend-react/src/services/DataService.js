@@ -12,23 +12,16 @@ const DataService = {
         return await axios.get(BASE_API_URL + "/newsletters?limit=" + limit);
     },
     GetChats: async function (limit) {
-        return await axios.get(BASE_API_URL + "/chats?limit=" + limit);
+        return await axios.get(BASE_API_URL + "/llm/chats?limit=" + limit);
     },
-    GetChat: async function (id) {
-        return await axios.get(BASE_API_URL + "/chat/" + id);
+    GetChat: async function (chat_id) {
+        return await axios.get(BASE_API_URL + "/llm/chats/" + chat_id);
     },
     StartChatWithLLM: async function (message) {
-        // Generate unique id
-        var id = uuid();
-        var now = Date.now();
-        now = parseInt(now / 1000);
-        message["id"] = uuid();
-
-        return await axios.post(BASE_API_URL + "/chat/" + id, message);
+        return await axios.post(BASE_API_URL + "/llm/chats/", message);
     },
-    ChatWithLLM: async function (id, message) {
-        message["id"] = uuid();
-        return await axios.post(BASE_API_URL + "/chat/" + id, message);
+    ContinueChatWithLLM: async function (chat_id, message) {
+        return await axios.post(BASE_API_URL + "/llm/chats/" + chat_id, message);
     },
 }
 

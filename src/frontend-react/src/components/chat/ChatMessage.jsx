@@ -3,8 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Person, SmartToy } from '@mui/icons-material';
 import ForumIcon from '@mui/icons-material/Forum';
-import DataService from "../../services/MockDataService"; // Mock
-//import DataService from "../../services/DataService";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+//import DataService from "../../services/MockDataService"; // Mock
+import DataService from "../../services/DataService";
 
 // Styles
 import styles from './ChatMessage.module.css';
@@ -58,7 +61,7 @@ export default function ChatMessage({
             <div className={styles.chatHistory} ref={chatHistoryRef}>
                 {chat && chat.messages.map((msg) => (
                     <div
-                        key={msg.id}
+                        key={msg.message_id}
                         className={`${styles.message} ${styles[msg.role]}`}
                     >
                         <div className={styles.messageIcon}>

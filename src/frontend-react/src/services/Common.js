@@ -1,6 +1,7 @@
 //export const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
 export const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 export const APP_VERSION = 1.0;
+export const MOCK_SERVICE = true;
 
 export function epochToJsDate(ts) {
     let dt = new Date(ts)

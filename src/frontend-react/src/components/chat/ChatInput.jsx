@@ -46,21 +46,10 @@ export default function ChatInput({
         }
     };
     const handleSubmit = () => {
-        // if (message.trim()) {
-        //     console.log('Submitting message:', message);
-        //     setMessage('');
-        //     // Reset textarea height
-        //     if (textAreaRef.current) {
-        //         textAreaRef.current.style.height = 'auto';
-        //     }
 
-        //     // Chat details
-        //     onSendMessage(message);
-        // }
         if (message.trim() || selectedImage) {
             console.log('Submitting message:', message);
             const newMessage = {
-                role: 'user',
                 content: message.trim(),
                 image: selectedImage?.preview || null
             };

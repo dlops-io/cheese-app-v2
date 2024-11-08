@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowForward } from '@mui/icons-material';
 import HistoryIcon from '@mui/icons-material/History';
-import DataService from "../../services/MockDataService"; // Mock
-//import DataService from "../../services/DataService";
-import { formatRelativeTime } from "../../services/Common";
+//import DataService from "../../services/MockDataService"; // Mock
+import DataService from "../../services/DataService";
+import { formatRelativeTime, MOCK_SERVICE } from "../../services/Common";
+
 
 // Styles
 import styles from './ChatHistory.module.css';
@@ -47,7 +48,7 @@ export default function ChatHistory({
 
             <div className={styles.chatGrid}>
                 {chatHistory.map((item) => (
-                    <div key={item.id} className={styles.chatCard} onClick={() => router.push('/chat?id=' + item.id)}>
+                    <div key={item.chat_id} className={styles.chatCard} onClick={() => router.push('/chat?id=' + item.chat_id)}>
                         <h3 className={styles.chatTitle}>{item.title}</h3>
                         <span className={styles.chatTime}>
                             {formatRelativeTime(item.dts)}

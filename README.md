@@ -156,6 +156,12 @@ To run the app in development mode, simply run:
 - Go to `http://localhost:3000`
 
 
+<!-- 
+vector-db-cli
+python cli.py --chunk --embed --load --chunk_type recursive-split
+
+ -->
+
 ---
 ---
 

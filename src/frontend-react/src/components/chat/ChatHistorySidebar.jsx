@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DataService from "../../services/MockDataService"; // Mock
-//import DataService from "../../services/DataService";
+//import DataService from "../../services/MockDataService"; // Mock
+import DataService from "../../services/DataService";
 import { formatRelativeTime } from "../../services/Common";
 
 // Styles
@@ -45,9 +45,9 @@ export default function ChatHistorySidebar({
             <div className={styles.chatList}>
                 {chatHistory.map((item) => (
                     <div
-                        key={item.id}
+                        key={item.chat_id}
                         className={`${styles.chatItem} ${chat_id === item.id ? styles.active : ''}`}
-                        onClick={() => router.push('/chat?id=' + item.id)}
+                        onClick={() => router.push('/chat?id=' + item.chat_id)}
                     >
                         <div className={styles.chatItemContent}>
                             <span className={styles.chatTitle}>

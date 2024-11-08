@@ -7,8 +7,8 @@ import ChatInput from '@/components/chat/ChatInput';
 import ChatHistory from '@/components/chat/ChatHistory';
 import ChatHistorySidebar from '@/components/chat/ChatHistorySidebar';
 import ChatMessage from '@/components/chat/ChatMessage';
-import DataService from "../../services/MockDataService"; // Mock
-//import DataService from "../../services/DataService";
+//import DataService from "../../services/MockDataService"; // Mock
+import DataService from "../../services/DataService";
 
 // Import the styles
 import styles from "./styles.module.css";
@@ -57,9 +57,9 @@ export default function ChatPage({ searchParams }) {
                 const response = await DataService.StartChatWithLLM(message);
                 console.log(response.data);
                 setChat(response.data);
-                setChatId(response.data["id"]);
+                setChatId(response.data["chat_id"]);
                 setHasActiveChat(true);
-                router.push('/chat?id=' + response.data["id"]);
+                router.push('/chat?id=' + response.data["chat_id"]);
             } catch (error) {
                 console.error('Error fetching chat:', error);
                 setChat(null);
@@ -77,7 +77,7 @@ export default function ChatPage({ searchParams }) {
 
         const continueChat = async (id, message) => {
             try {
-                const response = await DataService.ChatWithLLM(id, message);
+                const response = await DataService.ContinueChatWithLLM(id, message);
                 console.log(response.data);
                 setChat(response.data);
                 setHasActiveChat(true);
