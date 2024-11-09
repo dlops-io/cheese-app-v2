@@ -14,7 +14,7 @@ from api.utils.chat_utils import ChatHistoryManager
 router = APIRouter()
 
 # Initialize chat history manager and sessions
-chat_manager = ChatHistoryManager()
+chat_manager = ChatHistoryManager(model="llm")
 
 @router.get("/chats")
 async def get_chats(limit: Optional[int] = None):
@@ -48,11 +48,10 @@ async def start_chat_with_llm(message: Dict):
     assistant_response = generate_chat_response(chat_session, message)
     
     # Create chat response
-    title = (
-        message.get("content", "Image chat")[:50] + "..."
-        if len(message.get("content", "Image chat")) > 50
-        else message.get("content", "Image chat")
-    )
+    title = message.get("content")
+    if title == "":
+        title =  "Image chat"
+    title = title[:50] + "..."
     chat_response = {
         "chat_id": chat_id,
         "title": title,
@@ -72,7 +71,7 @@ async def start_chat_with_llm(message: Dict):
     return chat_response
 
 @router.post("/chats/{chat_id}")
-async def chat_with_llm(chat_id: str, message: Dict):
+async def continue_chat_with_llm(chat_id: str, message: Dict):
     print("content:", message["content"])
     """Add a message to an existing chat"""
     chat = chat_manager.get_chat(chat_id)
