@@ -163,10 +163,10 @@ class ChatHistoryManager:
             traceback.print_exc()
             raise e
     
-    def save_chat(self, chat_data: Dict) -> None:
+    def save_chat(self, chat_to_save: Dict) -> None:
         """Save a chat to both memory and file, handling images separately"""
         # Create a copy of chat data to modify
-        chat_to_save = chat_data.copy()
+        #chat_to_save = chat_data.copy()
         
         # Process messages to save images separately
         for message in chat_to_save["messages"]:
@@ -191,20 +191,20 @@ class ChatHistoryManager:
             # Need to keep the original with image data in memory
             existing_chat = next(
                 (chat for chat in self.recent_chats 
-                 if chat['chat_id'] == chat_data['chat_id']),
+                 if chat['chat_id'] == chat_to_save['chat_id']),
                 None
             )
             
             if existing_chat:
                 # Update existing chat
                 existing_index = self.recent_chats.index(existing_chat)
-                self.recent_chats[existing_index] = chat_data
+                self.recent_chats[existing_index] = chat_to_save
             else:
                 # Add new chat
-                self.recent_chats.append(chat_data)
+                self.recent_chats.append(chat_to_save)
                 
         except Exception as e:
-            print(f"Error saving chat {chat_data['id']}: {str(e)}")
+            print(f"Error saving chat {chat_to_save['chat_id']}: {str(e)}")
             traceback.print_exc()
             raise e
 

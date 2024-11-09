@@ -6,6 +6,8 @@ import io
 from PIL import Image
 from pathlib import Path
 import traceback
+import chromadb
+from vertexai.language_models import TextEmbeddingInput, TextEmbeddingModel
 from vertexai.generative_models import GenerativeModel, ChatSession, Part
 
 # Setup
@@ -14,6 +16,8 @@ GCP_LOCATION = "us-central1"
 EMBEDDING_MODEL = "text-embedding-004"
 EMBEDDING_DIMENSION = 256
 GENERATIVE_MODEL = "gemini-1.5-flash-002"
+CHROMADB_HOST = os.environ["CHROMADB_HOST"]
+CHROMADB_PORT = os.environ["CHROMADB_PORT"]
 
 # Configuration settings for the content generation
 generation_config = {
@@ -21,29 +25,49 @@ generation_config = {
     "temperature": 0.1,  # Control randomness in output
     "top_p": 0.95,  # Use nucleus sampling
 }
+
 # Initialize the GenerativeModel with specific system instructions
 SYSTEM_INSTRUCTION = """
-You are an AI assistant specialized in cheese knowledge.
+You are an AI assistant specialized in cheese knowledge. Your responses are based solely on the information provided in the text chunks given to you. Do not use any external knowledge or make assumptions beyond what is explicitly stated in these chunks.
 
 When answering a query:
-1. Demonstrate expertise in cheese, including aspects like:
-  - Production methods and techniques
-  - Flavor profiles and characteristics
-  - Aging processes and requirements
-  - Regional varieties and traditions
-  - Pairing recommendations
-  - Storage and handling best practices
-2. Always maintain a professional and knowledgeable tone, befitting a cheese expert.
+1. Carefully read all the text chunks provided.
+2. Identify the most relevant information from these chunks to address the user's question.
+3. Formulate your response using only the information found in the given chunks.
+4. If the provided chunks do not contain sufficient information to answer the query, state that you don't have enough information to provide a complete answer.
+5. Always maintain a professional and knowledgeable tone, befitting a cheese expert.
+6. If there are contradictions in the provided chunks, mention this in your response and explain the different viewpoints presented.
 
-Your goal is to provide accurate, helpful information about cheese for each query.
+Remember:
+- You are an expert in cheese, but your knowledge is limited to the information in the provided chunks.
+- Do not invent information or draw from knowledge outside of the given text chunks.
+- If asked about topics unrelated to cheese, politely redirect the conversation back to cheese-related subjects.
+- Be concise in your responses while ensuring you cover all relevant information from the chunks.
+
+Your goal is to provide accurate, helpful information about cheese based solely on the content of the text chunks you receive with each query.
 """
 generative_model = GenerativeModel(
 	GENERATIVE_MODEL,
 	system_instruction=[SYSTEM_INSTRUCTION]
 )
+# https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text-embeddings-api#python
+embedding_model = TextEmbeddingModel.from_pretrained(EMBEDDING_MODEL)
 
 # Initialize chat sessions
 chat_sessions: Dict[str, ChatSession] = {}
+
+# Connect to chroma DB
+client = chromadb.HttpClient(host=CHROMADB_HOST, port=CHROMADB_PORT)
+method = "recursive-split"
+collection_name = f"{method}-collection"
+# Get the collection
+collection = client.get_collection(name=collection_name)
+
+def generate_query_embedding(query):
+	query_embedding_inputs = [TextEmbeddingInput(task_type='RETRIEVAL_DOCUMENT', text=query)]
+	kwargs = dict(output_dimensionality=EMBEDDING_DIMENSION) if EMBEDDING_DIMENSION else {}
+	embeddings = embedding_model.get_embeddings(query_embedding_inputs, **kwargs)
+	return embeddings[0].values
 
 def create_chat_session() -> ChatSession:
     """Create a new chat session with the model"""
@@ -61,11 +85,6 @@ def generate_chat_response(chat_session: ChatSession, message: Dict) -> str:
     Returns:
         str: The model's response
     """
-    # response = chat_session.send_message(
-    #     message,
-    #     generation_config=generation_config
-    # )
-    # return response.text
     try:
         # Initialize parts list for the message
         message_parts = []
@@ -104,7 +123,7 @@ def generate_chat_response(chat_session: ChatSession, message: Dict) -> str:
                 )
         elif message.get("image_path"):
             # Read the image file
-            image_path = os.path.join("chat-history","llm",message.get("image_path"))
+            image_path = os.path.join("chat-history","llm-rag",message.get("image_path"))
             with Path(image_path).open('rb') as f:
                 image_bytes = f.read()
 
@@ -128,7 +147,18 @@ def generate_chat_response(chat_session: ChatSession, message: Dict) -> str:
         else:
             # Add text content if present
             if message.get("content"):
-                message_parts.append(message["content"])
+                # Create embeddings for the message content
+                query_embedding = generate_query_embedding(message["content"])
+                # Retrieve chunks based on embedding value 
+                results = collection.query(
+                    query_embeddings=[query_embedding],
+                    n_results=5
+                )
+                INPUT_PROMPT = f"""
+                {message["content"]}
+                {"\n".join(results["documents"][0])}
+                """
+                message_parts.append(INPUT_PROMPT)
                     
         
         if not message_parts:
@@ -157,10 +187,5 @@ def rebuild_chat_session(chat_history: List[Dict]) -> ChatSession:
     for message in chat_history:
         if message["role"] == "user":
             generate_chat_response(new_session, message)
-        # 
-        #     response = new_session.send_message(
-        #         message["content"],
-        #         generation_config=generation_config
-        #     )
     
     return new_session
