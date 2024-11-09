@@ -48,7 +48,7 @@ export default function ChatHistory({
 
             <div className={styles.chatGrid}>
                 {chatHistory.map((item) => (
-                    <div key={item.chat_id} className={styles.chatCard} onClick={() => router.push('/chat?id=' + item.chat_id)}>
+                    <div key={item.chat_id} className={styles.chatCard} onClick={() => router.push('/chat?model=' + model + '&id=' + item.chat_id)}>
                         <h3 className={styles.chatTitle}>{item.title}</h3>
                         <span className={styles.chatTime}>
                             {formatRelativeTime(item.dts)}

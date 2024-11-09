@@ -162,6 +162,7 @@ export default function ChatInput({
                         onChange={handleModelChange}
                     >
                         <option value="llm">Formaggio Assistant (LLM)</option>
+                        <option value="llm-cnn">Formaggio Assistant (LLM + CNN)</option>
                         <option value="llm-rag">Cheese Expert (RAG)</option>
                         <option value="llm-agent">Cheese Expert (Agent)</option>
                     </select>

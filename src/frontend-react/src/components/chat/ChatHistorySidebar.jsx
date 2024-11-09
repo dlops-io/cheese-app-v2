@@ -38,7 +38,7 @@ export default function ChatHistorySidebar({
                 <h2>Chat History</h2>
                 <button
                     className={styles.newChatButton}
-                    onClick={() => router.push('/chat')}
+                    onClick={() => router.push('/chat?model=' + model)}
                 >
                     New Chat
                 </button>
@@ -48,7 +48,7 @@ export default function ChatHistorySidebar({
                     <div
                         key={item.chat_id}
                         className={`${styles.chatItem} ${chat_id === item.id ? styles.active : ''}`}
-                        onClick={() => router.push('/chat?id=' + item.chat_id)}
+                        onClick={() => router.push('/chat?model=' + model + '&id=' + item.chat_id)}
                     >
                         <div className={styles.chatItemContent}>
                             <span className={styles.chatTitle}>
