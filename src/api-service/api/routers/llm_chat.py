@@ -81,7 +81,7 @@ async def continue_chat_with_llm(chat_id: str, message: Dict):
     # Get or rebuild chat session
     chat_session = chat_sessions.get(chat_id)
     if not chat_session:
-        chat_session = rebuild_chat_session(message)
+        chat_session = rebuild_chat_session(chat["messages"])
         chat_sessions[chat_id] = chat_session
     
     # Update timestamp
@@ -93,7 +93,7 @@ async def continue_chat_with_llm(chat_id: str, message: Dict):
     message["role"] = "user"
     
     # Generate response
-    assistant_response = generate_chat_response(chat_session, message["content"])
+    assistant_response = generate_chat_response(chat_session, message)
     
     # Add messages
     chat["messages"].append(message)

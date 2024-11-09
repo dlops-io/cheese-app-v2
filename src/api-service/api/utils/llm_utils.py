@@ -4,6 +4,7 @@ from fastapi import HTTPException
 import base64
 import io
 from PIL import Image
+from pathlib import Path
 import traceback
 from vertexai.generative_models import GenerativeModel, ChatSession, Part
 
@@ -101,6 +102,29 @@ def generate_chat_response(chat_session: ChatSession, message: Dict) -> str:
                     status_code=400,
                     detail=f"Image processing failed: {str(e)}"
                 )
+        elif message.get("image_path"):
+            # Read the image file
+            image_path = os.path.join("chat-history","llm",message.get("image_path"))
+            with Path(image_path).open('rb') as f:
+                image_bytes = f.read()
+
+            # Determine MIME type based on file extension
+            mime_type = {
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.png': 'image/png',
+                '.gif': 'image/gif'
+            }.get(Path(image_path).suffix.lower(), 'image/jpeg')
+
+            # Create an image Part using FileData
+            image_part = Part.from_data(image_bytes, mime_type=mime_type)
+            message_parts.append(image_part)
+
+            # Add text content if present
+            if message.get("content"):
+                message_parts.append(message["content"])
+            else:
+                message_parts.append("Name the cheese in the image, no descriptions needed")
         else:
             # Add text content if present
             if message.get("content"):
@@ -131,10 +155,11 @@ def rebuild_chat_session(chat_history: List[Dict]) -> ChatSession:
     new_session = create_chat_session()
     
     for message in chat_history:
-        if message["role"] == "user":
-            response = new_session.send_message(
-                message["content"],
-                generation_config=generation_config
-            )
+        generate_chat_response(new_session, message)
+        # if message["role"] == "user":
+        #     response = new_session.send_message(
+        #         message["content"],
+        #         generation_config=generation_config
+        #     )
     
     return new_session
