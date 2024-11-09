@@ -16,6 +16,7 @@ chromadb = "*"
 uvicorn = "*"
 fastapi = "*"
 python-multipart = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.12"
