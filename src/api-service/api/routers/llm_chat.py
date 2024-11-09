@@ -1,99 +1,20 @@
 import os
 from fastapi import APIRouter, Query, Body, HTTPException
+from fastapi.responses import FileResponse
 from typing import Dict, Any, List, Optional
 import uuid
 import time
 from datetime import datetime
-import vertexai
-from vertexai.language_models import TextEmbeddingInput, TextEmbeddingModel
-from vertexai.generative_models import GenerativeModel, ChatSession, Content, Part, GenerationConfig, ToolConfig
-from api.chat_utils import ChatHistoryManager
+import mimetypes
+from pathlib import Path
+from api.utils.llm_utils import chat_sessions, create_chat_session, generate_chat_response, rebuild_chat_session
+from api.utils.chat_utils import ChatHistoryManager
 
 # Define Router
 router = APIRouter()
 
-# Setup
-GCP_PROJECT = os.environ["GCP_PROJECT"]
-GCP_LOCATION = "us-central1"
-EMBEDDING_MODEL = "text-embedding-004"
-EMBEDDING_DIMENSION = 256
-GENERATIVE_MODEL = "gemini-1.5-flash-002"
-
-# Configuration settings for the content generation
-generation_config = {
-    "max_output_tokens": 3000,  # Maximum number of tokens for output
-    "temperature": 0.1,  # Control randomness in output
-    "top_p": 0.95,  # Use nucleus sampling
-}
-# Initialize the GenerativeModel with specific system instructions
-SYSTEM_INSTRUCTION = """
-You are an AI assistant specialized in cheese knowledge.
-
-When answering a query:
-1. Demonstrate expertise in cheese, including aspects like:
-  - Production methods and techniques
-  - Flavor profiles and characteristics
-  - Aging processes and requirements
-  - Regional varieties and traditions
-  - Pairing recommendations
-  - Storage and handling best practices
-2. Always maintain a professional and knowledgeable tone, befitting a cheese expert.
-
-Your goal is to provide accurate, helpful information about cheese for each query.
-"""
-generative_model = GenerativeModel(
-	GENERATIVE_MODEL,
-	system_instruction=[SYSTEM_INSTRUCTION]
-)
-
-
-# def generate_chat_response(input_prompt):
-#      responses = generative_model.generate_content(
-# 		[input_prompt],  # Input prompt
-# 		generation_config=generation_config,  # Configuration settings
-# 		stream=False,  # Enable streaming for responses
-# 	)
-#      return responses.text
-
-# @router.post("/chat")
-# async def get_chat_response(request: Dict[str, Any] = Body(...)) -> Dict[str, str]:
-#     prompt = request.get("prompt")
-#     if not prompt:
-#         return {"error": "No prompt provided"}
-#     response = generate_chat_response(prompt)
-#     return {"response": response}
-
-# In-memory storage for chats and their associated chat sessions
-#recent_chats: List[Dict] = []
 # Initialize chat history manager and sessions
 chat_manager = ChatHistoryManager()
-chat_sessions: Dict[str, ChatSession] = {}
-
-def create_chat_session() -> ChatSession:
-    """Create a new chat session with the model"""
-    return generative_model.start_chat()
-
-def generate_chat_response(chat_session: ChatSession, message: str) -> str:
-    """Generate a response using the chat session to maintain history"""
-    response = chat_session.send_message(
-        message,
-        generation_config=generation_config
-    )
-    return response.text
-
-def rebuild_chat_session(chat_history: List[Dict]) -> ChatSession:
-    """Rebuild a chat session with complete context"""
-    new_session = create_chat_session()
-    
-    for message in chat_history:
-        if message["role"] == "user":
-            response = new_session.send_message(
-                message["content"],
-                generation_config=generation_config
-            )
-    
-    return new_session
-
 
 @router.get("/chats")
 async def get_chats(limit: Optional[int] = None):
@@ -110,7 +31,7 @@ async def get_chat(chat_id: str):
 
 @router.post("/chats")
 async def start_chat_with_llm(message: Dict):
-    print("message:", message)
+    print("content:", message["content"])
     """Start a new chat with an initial message"""
     chat_id = str(uuid.uuid4())
     current_time = int(time.time())
@@ -124,12 +45,17 @@ async def start_chat_with_llm(message: Dict):
     message["role"] = "user"
     
     # Generate response
-    assistant_response = generate_chat_response(chat_session, message["content"])
+    assistant_response = generate_chat_response(chat_session, message)
     
     # Create chat response
+    title = (
+        message.get("content", "Image chat")[:50] + "..."
+        if len(message.get("content", "Image chat")) > 50
+        else message.get("content", "Image chat")
+    )
     chat_response = {
         "chat_id": chat_id,
-        "title": message["content"][:50] + "..." if len(message["content"]) > 50 else message["content"],
+        "title": title,
         "dts": current_time,
         "messages": [
             message,
@@ -147,7 +73,7 @@ async def start_chat_with_llm(message: Dict):
 
 @router.post("/chats/{chat_id}")
 async def chat_with_llm(chat_id: str, message: Dict):
-    print("message:", message)
+    print("content:", message["content"])
     """Add a message to an existing chat"""
     chat = chat_manager.get_chat(chat_id)
     if not chat:
@@ -156,7 +82,7 @@ async def chat_with_llm(chat_id: str, message: Dict):
     # Get or rebuild chat session
     chat_session = chat_sessions.get(chat_id)
     if not chat_session:
-        chat_session = rebuild_chat_session(chat["messages"])
+        chat_session = rebuild_chat_session(message)
         chat_sessions[chat_id] = chat_session
     
     # Update timestamp
@@ -181,3 +107,58 @@ async def chat_with_llm(chat_id: str, message: Dict):
     # Save updated chat
     chat_manager.save_chat(chat)
     return chat
+
+@router.get("/images/{chat_id}/{message_id}.png")
+async def get_chat_image(chat_id: str, message_id: str):
+    """
+    Serve an image from the chat history.
+    
+    Args:
+        chat_id: The chat ID
+        message_id: The message ID
+    
+    Returns:
+        FileResponse: The image file with appropriate content type
+    """
+    try:
+        # Construct the image path
+        image_path = os.path.join(
+            chat_manager.images_dir,
+            chat_id,
+            f"{message_id}.png"
+        )
+        
+        # Verify the path exists and is within the images directory
+        image_path = Path(image_path).resolve()
+        images_dir = Path(chat_manager.images_dir).resolve()
+        
+        # Security check: ensure the requested file is within the images directory
+        if not str(image_path).startswith(str(images_dir)):
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied"
+            )
+        
+        if not image_path.exists():
+            raise HTTPException(
+                status_code=404,
+                detail="Image not found"
+            )
+        
+        # Determine content type
+        content_type, _ = mimetypes.guess_type(str(image_path))
+        if not content_type:
+            content_type = "application/octet-stream"
+        
+        return FileResponse(
+            path=image_path,
+            media_type=content_type
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error serving image: {str(e)}"
+        )
