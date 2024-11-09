@@ -23,6 +23,9 @@ const DataService = {
     ContinueChatWithLLM: async function (chat_id, message) {
         return await axios.post(BASE_API_URL + "/llm/chats/" + chat_id, message);
     },
+    GetChatMessageImage: function (image_path) {
+        return BASE_API_URL + "/llm/" + image_path;
+    },
 }
 
 export default DataService;

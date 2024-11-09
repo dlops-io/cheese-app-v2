@@ -52,7 +52,7 @@ export default function ChatPage({ searchParams }) {
 
     function tempChatMessage(message) {
         // Set temp values
-        message["id"] = uuid();
+        message["message_id"] = uuid();
         message["role"] = 'user';
         if (chat) {
             // Append message

@@ -81,6 +81,14 @@ export default function ChatMessage({
                                     />
                                 </div>
                             )}
+                            {msg.image_path && (
+                                <div className={styles.messageImage}>
+                                    <img
+                                        src={DataService.GetChatMessageImage(msg.image_path)}
+                                        alt="Chat Image"
+                                    />
+                                </div>
+                            )}
                             {msg.content && (
                                 <ReactMarkdown
                                     remarkPlugins={[remarkGfm]}
