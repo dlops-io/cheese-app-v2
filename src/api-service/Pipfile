@@ -12,11 +12,12 @@ google-cloud-storage = "*"
 google-generativeai = "*"
 google-cloud-aiplatform = "*"
 pandas = "*"
-chromadb = "*"
 uvicorn = "*"
 fastapi = "*"
 python-multipart = "*"
 pillow = "*"
+chromadb = "==0.5.7"
+tensorflow = "==2.17.0"
 
 [requires]
 python_version = "3.12"
