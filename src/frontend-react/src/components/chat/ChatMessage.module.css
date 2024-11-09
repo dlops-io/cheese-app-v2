@@ -112,6 +112,10 @@
     float: left;
 }
 
+.message.cnn .messageImage img {
+    float: left;
+}
+
 .messageContent {
     color: #FFFFFF;
     font-size: 15px;

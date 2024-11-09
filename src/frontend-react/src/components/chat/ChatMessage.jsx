@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Person, SmartToy } from '@mui/icons-material';
 import ForumIcon from '@mui/icons-material/Forum';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -67,9 +68,13 @@ export default function ChatMessage({
                         className={`${styles.message} ${styles[msg.role]}`}
                     >
                         <div className={styles.messageIcon}>
-                            {msg.role === 'assistant' ? (
+                            {msg.role === 'assistant' && (
                                 <SmartToy sx={{ color: '#FFD700' }} />
-                            ) : (
+                            )}
+                            {msg.role === 'cnn' && (
+                                <RemoveRedEyeIcon sx={{ color: '#D700EE' }} />
+                            )}
+                            {msg.role === 'user' && (
                                 <Person sx={{ color: '#FFFFFF' }} />
                             )}
                         </div>
@@ -112,6 +117,9 @@ export default function ChatMessage({
                                 >
                                     {msg.content}
                                 </ReactMarkdown>
+                            )}
+                            {msg.results && (
+                                <div>{msg.results.prediction_label}&nbsp; ({msg.results.accuracy}%)</div>
                             )}
                         </div>
                         {msg.timestamp && (
