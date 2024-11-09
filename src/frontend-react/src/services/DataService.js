@@ -11,20 +11,20 @@ const DataService = {
     GetNewsletters: async function (limit) {
         return await axios.get(BASE_API_URL + "/newsletters?limit=" + limit);
     },
-    GetChats: async function (limit) {
-        return await axios.get(BASE_API_URL + "/llm/chats?limit=" + limit);
+    GetChats: async function (model, limit) {
+        return await axios.get(BASE_API_URL + "/" + model + "/chats?limit=" + limit);
     },
-    GetChat: async function (chat_id) {
-        return await axios.get(BASE_API_URL + "/llm/chats/" + chat_id);
+    GetChat: async function (model, chat_id) {
+        return await axios.get(BASE_API_URL + "/" + model + "/chats/" + chat_id);
     },
-    StartChatWithLLM: async function (message) {
-        return await axios.post(BASE_API_URL + "/llm/chats/", message);
+    StartChatWithLLM: async function (model, message) {
+        return await axios.post(BASE_API_URL + "/" + model + "/chats/", message);
     },
-    ContinueChatWithLLM: async function (chat_id, message) {
-        return await axios.post(BASE_API_URL + "/llm/chats/" + chat_id, message);
+    ContinueChatWithLLM: async function (model, chat_id, message) {
+        return await axios.post(BASE_API_URL + "/" + model + "/chats/" + chat_id, message);
     },
-    GetChatMessageImage: function (image_path) {
-        return BASE_API_URL + "/llm/" + image_path;
+    GetChatMessageImage: function (model, image_path) {
+        return BASE_API_URL + "/" + model + "/" + image_path;
     },
 }
 

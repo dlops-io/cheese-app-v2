@@ -13,7 +13,7 @@ import { formatRelativeTime, MOCK_SERVICE } from "../../services/Common";
 import styles from './ChatHistory.module.css';
 
 export default function ChatHistory({
-
+    model
 }) {
     // Component States
     const [chatHistory, setChatHistory] = useState([]);
@@ -23,7 +23,7 @@ export default function ChatHistory({
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await DataService.GetChats(20);
+                const response = await DataService.GetChats(model, 20);
                 setChatHistory(response.data);
             } catch (error) {
                 console.error('Error fetching podcasts:', error);
@@ -32,7 +32,7 @@ export default function ChatHistory({
         };
 
         fetchData();
-    }, []);
+    }, [model]);
 
     return (
         <div className={styles.recentChats}>

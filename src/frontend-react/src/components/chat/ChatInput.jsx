@@ -8,7 +8,9 @@ import IconButton from '@mui/material/IconButton';
 import styles from './ChatInput.module.css';
 
 export default function ChatInput({
-    onSendMessage
+    onSendMessage,
+    selectedModel,
+    onModelChange
 }) {
     // Component States
     const [message, setMessage] = useState('');
@@ -89,6 +91,9 @@ export default function ChatInput({
             reader.readAsDataURL(file);
         }
     };
+    const handleModelChange = (event) => {
+        onModelChange(event.target.value);
+    };
 
     const removeImage = () => {
         setSelectedImage(null);
@@ -151,10 +156,14 @@ export default function ChatInput({
                 </div>
                 <div className={styles.rightControls}>
                     <span className={styles.inputTip}>Use shift + return for new line</span>
-                    <select className={styles.modelSelect}>
-                        <option>Formaggio Assistant (Default)</option>
-                        <option>Cheese Expert</option>
-                        <option>Recipe Helper</option>
+                    <select
+                        className={styles.modelSelect}
+                        value={selectedModel}
+                        onChange={handleModelChange}
+                    >
+                        <option value="llm">Formaggio Assistant (LLM)</option>
+                        <option value="llm-rag">Cheese Expert (RAG)</option>
+                        <option value="llm-agent">Cheese Expert (Agent)</option>
                     </select>
                 </div>
             </div>

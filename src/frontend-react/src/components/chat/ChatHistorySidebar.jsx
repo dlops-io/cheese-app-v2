@@ -10,7 +10,8 @@ import { formatRelativeTime } from "../../services/Common";
 import styles from './ChatHistorySidebar.module.css';
 
 export default function ChatHistorySidebar({
-    chat_id
+    chat_id,
+    model
 }) {
     // Component States
     const [chatHistory, setChatHistory] = useState([]);
@@ -20,7 +21,7 @@ export default function ChatHistorySidebar({
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await DataService.GetChats(20);
+                const response = await DataService.GetChats(model, 20);
                 setChatHistory(response.data);
             } catch (error) {
                 console.error('Error fetching podcasts:', error);

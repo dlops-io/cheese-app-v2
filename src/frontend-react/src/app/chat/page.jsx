@@ -15,9 +15,10 @@ import { uuid } from "../../services/Common";
 import styles from "./styles.module.css";
 
 export default function ChatPage({ searchParams }) {
-    const params = use(searchParams)
+    const params = use(searchParams);
     const chat_id = params.id;
-    console.log(chat_id);
+    const model = params.model || 'llm';
+    console.log(chat_id, model);
 
     // Component States
     const [chatId, setChatId] = useState(params.id);
@@ -25,12 +26,13 @@ export default function ChatPage({ searchParams }) {
     const [chat, setChat] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
     const [isTyping, setIsTyping] = useState(false);
+    const [selectedModel, setSelectedModel] = useState(model);
     const router = useRouter();
 
     const fetchChat = async (id) => {
         try {
             setChat(null);
-            const response = await DataService.GetChat(id);
+            const response = await DataService.GetChat(model, id);
             setChat(response.data);
             console.log(chat);
         } catch (error) {
@@ -49,6 +51,9 @@ export default function ChatPage({ searchParams }) {
             setHasActiveChat(false);
         }
     }, [chat_id]);
+    useEffect(() => {
+        setSelectedModel(model);
+    }, [model]);
 
     function tempChatMessage(message) {
         // Set temp values
@@ -78,7 +83,7 @@ export default function ChatPage({ searchParams }) {
                 setChat(tempChatMessage(message)); // Show the user input message while LLM is invoked
 
                 // Submit chat
-                const response = await DataService.StartChatWithLLM(message);
+                const response = await DataService.StartChatWithLLM(model, message);
                 console.log(response.data);
 
                 // Hide typing indicator and add response
@@ -86,14 +91,14 @@ export default function ChatPage({ searchParams }) {
 
                 setChat(response.data);
                 setChatId(response.data["chat_id"]);
-                router.push('/chat?id=' + response.data["chat_id"]);
+                router.push('/chat?model=' + selectedModel + '&id=' + response.data["chat_id"]);
             } catch (error) {
                 console.error('Error fetching chat:', error);
                 setIsTyping(false);
                 setChat(null);
                 setChatId(null);
                 setHasActiveChat(false);
-                router.push('/chat')
+                router.push('/chat?model=' + selectedModel)
             }
         };
         startChat(message);
@@ -111,7 +116,7 @@ export default function ChatPage({ searchParams }) {
                 tempChatMessage(message);
 
                 // Submit chat
-                const response = await DataService.ContinueChatWithLLM(id, message);
+                const response = await DataService.ContinueChatWithLLM(model, id, message);
                 console.log(response.data);
 
                 // Hide typing indicator and add response
@@ -132,6 +137,15 @@ export default function ChatPage({ searchParams }) {
     const forceRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
     };
+    const handleModelChange = (newValue) => {
+
+        setSelectedModel(newValue);
+        var path = '/chat?model=' + newValue;
+        if (chat_id) {
+            path = path + '&id=' + chat_id;
+        }
+        router.push(path)
+    };
 
     return (
         <div className={styles.container}>
@@ -142,14 +156,14 @@ export default function ChatPage({ searchParams }) {
                     <div className={styles.heroContent}>
                         <h1>Cheese Assistant 🌟</h1>
                         {/* Main Chat Input: ChatInput */}
-                        <ChatInput onSendMessage={newChat} className={styles.heroChatInputContainer}></ChatInput>
+                        <ChatInput onSendMessage={newChat} className={styles.heroChatInputContainer} selectedModel={selectedModel} onModelChange={handleModelChange}></ChatInput>
                     </div>
                 </section>
             )}
 
             {/* Chat History Section: ChatHistory */}
             {!hasActiveChat && (
-                <ChatHistory></ChatHistory>
+                <ChatHistory model={model}></ChatHistory>
             )}
 
             {/* Chat Block Header Section */}
@@ -160,14 +174,14 @@ export default function ChatPage({ searchParams }) {
             {hasActiveChat && (
                 <div className={styles.chatInterface}>
                     {/* Chat History Sidebar: ChatHistorySidebar */}
-                    <ChatHistorySidebar chat_id={chat_id}></ChatHistorySidebar>
+                    <ChatHistorySidebar chat_id={chat_id} model={model}></ChatHistorySidebar>
 
                     {/* Main chat area */}
                     <div className={styles.mainContent}>
                         {/* Chat message: ChatMessage */}
-                        <ChatMessage chat={chat} key={refreshKey} isTyping={isTyping}></ChatMessage>
+                        <ChatMessage chat={chat} key={refreshKey} isTyping={isTyping} model={model}></ChatMessage>
                         {/* Sticky chat input area: ChatInput */}
-                        <ChatInput onSendMessage={appendChat} chat={chat}></ChatInput>
+                        <ChatInput onSendMessage={appendChat} chat={chat} selectedModel={selectedModel} onModelChange={setSelectedModel}></ChatInput>
                     </div>
                 </div>
             )}

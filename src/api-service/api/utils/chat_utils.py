@@ -8,10 +8,11 @@ import traceback
 import io
         
 class ChatHistoryManager:
-    def __init__(self, history_dir: str = "chat-history"):
+    def __init__(self, model, history_dir: str = "chat-history"):
         """Initialize the chat history manager with the specified directory"""
-        self.history_dir = history_dir
-        self.images_dir = os.path.join(history_dir, "images")
+        self.model = model
+        self.history_dir = os.path.join(history_dir, model)
+        self.images_dir = os.path.join(self.history_dir, "images")
         self.recent_chats: List[Dict] = []
         self._ensure_directories()
         self.load_chat_history()

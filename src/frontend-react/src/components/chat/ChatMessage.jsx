@@ -14,7 +14,8 @@ import styles from './ChatMessage.module.css';
 
 export default function ChatMessage({
     chat,
-    isTyping
+    isTyping,
+    model
 }) {
     // Component States
     const chatHistoryRef = useRef(null);
@@ -22,7 +23,7 @@ export default function ChatMessage({
     const fetchChat = async (id) => {
         try {
             setChat(null);
-            const response = await DataService.GetChat(id);
+            const response = await DataService.GetChat(model, id);
             setChat(response.data);
             console.log(chat);
         } catch (error) {
@@ -84,7 +85,7 @@ export default function ChatMessage({
                             {msg.image_path && (
                                 <div className={styles.messageImage}>
                                     <img
-                                        src={DataService.GetChatMessageImage(msg.image_path)}
+                                        src={DataService.GetChatMessageImage(model, msg.image_path)}
                                         alt="Chat Image"
                                     />
                                 </div>
