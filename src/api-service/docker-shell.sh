@@ -31,5 +31,7 @@ docker run --rm --name $IMAGE_NAME -ti \
 -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/ml-workflow.json \
 -e GCP_PROJECT=$GCP_PROJECT \
 -e GCS_BUCKET_NAME=$GCS_BUCKET_NAME \
+-e CHROMADB_HOST=$CHROMADB_HOST \
+-e CHROMADB_PORT=$CHROMADB_PORT \
 --network cheese-app-network \
 $IMAGE_NAME
