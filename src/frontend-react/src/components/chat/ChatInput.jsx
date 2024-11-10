@@ -10,7 +10,8 @@ import styles from './ChatInput.module.css';
 export default function ChatInput({
     onSendMessage,
     selectedModel,
-    onModelChange
+    onModelChange,
+    disableModelSelect = false
 }) {
     // Component States
     const [message, setMessage] = useState('');
@@ -160,6 +161,7 @@ export default function ChatInput({
                         className={styles.modelSelect}
                         value={selectedModel}
                         onChange={handleModelChange}
+                        disabled={disableModelSelect}
                     >
                         <option value="llm">Formaggio Assistant (LLM)</option>
                         <option value="llm-cnn">Formaggio Assistant (LLM + CNN)</option>

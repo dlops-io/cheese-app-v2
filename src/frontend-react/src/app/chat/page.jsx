@@ -181,7 +181,13 @@ export default function ChatPage({ searchParams }) {
                         {/* Chat message: ChatMessage */}
                         <ChatMessage chat={chat} key={refreshKey} isTyping={isTyping} model={model}></ChatMessage>
                         {/* Sticky chat input area: ChatInput */}
-                        <ChatInput onSendMessage={appendChat} chat={chat} selectedModel={selectedModel} onModelChange={setSelectedModel}></ChatInput>
+                        <ChatInput
+                            onSendMessage={appendChat}
+                            chat={chat}
+                            selectedModel={selectedModel}
+                            onModelChange={setSelectedModel}
+                            disableModelSelect={true}
+                        ></ChatInput>
                     </div>
                 </div>
             )}

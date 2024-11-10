@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import DataService from "../../services/MockDataService"; // Mock
-//import DataService from "../../services/DataService";
+//import DataService from "../../services/MockDataService"; // Mock
+import DataService from "../../services/DataService";
 
 // Import the styles
 import styles from "./styles.module.css";
@@ -57,8 +57,8 @@ export default function NewslettersPage() {
                     {newsletters.map((newsletter) => (
                         <article key={newsletter.id} className={styles.card}>
                             <div className={styles.imageContainer}>
-                                <Image
-                                    src={newsletter.image}
+                                <img
+                                    src={DataService.GetNewsletterImage(newsletter.image)}
                                     alt={newsletter.title}
                                     width={400}
                                     height={250}

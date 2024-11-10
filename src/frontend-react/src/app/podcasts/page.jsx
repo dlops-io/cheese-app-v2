@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PlayCircle } from '@mui/icons-material';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import DataService from "../../services/MockDataService"; // Mock
-//import DataService from "../../services/DataService";
+//import DataService from "../../services/MockDataService"; // Mock
+import DataService from "../../services/DataService";
 
 // Import the styles
 import styles from "./styles.module.css";
