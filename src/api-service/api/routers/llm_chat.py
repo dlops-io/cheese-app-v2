@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, Query, Body, HTTPException
+from fastapi import APIRouter, Header, Query, Body, HTTPException
 from fastapi.responses import FileResponse
 from typing import Dict, Any, List, Optional
 import uuid
@@ -17,21 +17,24 @@ router = APIRouter()
 chat_manager = ChatHistoryManager(model="llm")
 
 @router.get("/chats")
-async def get_chats(limit: Optional[int] = None):
+async def get_chats(limit: Optional[int] = None, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
     """Get all chats, optionally limited to a specific number"""
+    print("x_session_id:", x_session_id)
     return chat_manager.get_recent_chats(limit)
 
 @router.get("/chats/{chat_id}")
-async def get_chat(chat_id: str):
+async def get_chat(chat_id: str, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
     """Get a specific chat by ID"""
+    print("x_session_id:", x_session_id)
     chat = chat_manager.get_chat(chat_id)
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
     return chat
 
 @router.post("/chats")
-async def start_chat_with_llm(message: Dict):
+async def start_chat_with_llm(message: Dict, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
     print("content:", message["content"])
+    print("x_session_id:", x_session_id)
     """Start a new chat with an initial message"""
     chat_id = str(uuid.uuid4())
     current_time = int(time.time())
@@ -71,8 +74,9 @@ async def start_chat_with_llm(message: Dict):
     return chat_response
 
 @router.post("/chats/{chat_id}")
-async def continue_chat_with_llm(chat_id: str, message: Dict):
+async def continue_chat_with_llm(chat_id: str, message: Dict, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
     print("content:", message["content"])
+    print("x_session_id:", x_session_id)
     """Add a message to an existing chat"""
     chat = chat_manager.get_chat(chat_id)
     if not chat:
