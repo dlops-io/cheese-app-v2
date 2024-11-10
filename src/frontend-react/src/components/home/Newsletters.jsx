@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Newsletters.module.css';
-import DataService from "../../services/MockDataService"; // Mock
-//import DataService from "../../services/DataService";
+//import DataService from "../../services/MockDataService"; // Mock
+import DataService from "../../services/DataService";
 
 
 export default function Newsletter() {
@@ -45,7 +45,7 @@ export default function Newsletter() {
 
                             <p className={styles.excerpt}>{newsletter.excerpt}</p>
 
-                            <Link href={`/newsletters/${newsletter.id}`} className={styles.readMore}>
+                            <Link href={`/newsletters?id=${newsletter.id}`} className={styles.readMore}>
                                 Read More →
                             </Link>
                         </article>

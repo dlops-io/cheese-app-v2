@@ -23,8 +23,17 @@ const DataService = {
     GetPodcasts: async function (limit) {
         return await api.get(BASE_API_URL + "/podcasts?limit=" + limit);
     },
+    GetPodcast: async function (podcast_id) {
+        return await api.get(BASE_API_URL + "/podcasts/" + podcast_id);
+    },
     GetNewsletters: async function (limit) {
         return await api.get(BASE_API_URL + "/newsletters?limit=" + limit);
+    },
+    GetNewsletter: async function (newsletter_id) {
+        return await api.get(BASE_API_URL + "/newsletters/" + newsletter_id);
+    },
+    GetNewsletterImage: function (image_path) {
+        return BASE_API_URL + "/newsletters/image/" + image_path;
     },
     GetChats: async function (model, limit) {
         return await api.get(BASE_API_URL + "/" + model + "/chats?limit=" + limit);
