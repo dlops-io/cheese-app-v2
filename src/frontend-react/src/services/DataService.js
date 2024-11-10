@@ -26,6 +26,9 @@ const DataService = {
     GetPodcast: async function (podcast_id) {
         return await api.get(BASE_API_URL + "/podcasts/" + podcast_id);
     },
+    GetPodcastAudio: function (audio_path) {
+        return BASE_API_URL + "/podcasts/audio/" + audio_path;
+    },
     GetNewsletters: async function (limit) {
         return await api.get(BASE_API_URL + "/newsletters?limit=" + limit);
     },
