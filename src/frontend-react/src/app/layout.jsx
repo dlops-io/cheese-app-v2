@@ -1,4 +1,8 @@
 import './globals.css';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './auth';
+import ClientSessionProvider from '@/components/auth/ClientSessionProvider';
+import SessionInit from '@/components/auth/SessionInit';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
@@ -7,7 +11,8 @@ export const metadata = {
     description: 'Discover the world of cheese through AI',
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+    const session = await getServerSession(authOptions)
     return (
         <html lang="en">
             <head>
@@ -20,9 +25,12 @@ export default function RootLayout({ children }) {
                 />
             </head>
             <body className="min-h-screen">
-                <Header />
-                <main>{children}</main>
-                <Footer />
+                <ClientSessionProvider session={session}>
+                    <SessionInit />
+                    <Header />
+                    <main>{children}</main>
+                    <Footer />
+                </ClientSessionProvider>
             </body>
         </html>
     )
