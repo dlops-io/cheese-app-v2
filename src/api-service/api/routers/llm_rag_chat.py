@@ -81,6 +81,35 @@ async def continue_chat_with_llm(chat_id: str, message: Dict, x_session_id: str 
     chat = chat_manager.get_chat(chat_id, x_session_id)
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
+    
+    # Get or rebuild chat session
+    chat_session = chat_sessions.get(chat_id)
+    if not chat_session:
+        chat_session = rebuild_chat_session(chat["messages"])
+        chat_sessions[chat_id] = chat_session
+    
+    # Update timestamp
+    current_time = int(time.time())
+    chat["dts"] = current_time
+    
+    # Add message ID and role
+    message["message_id"] = str(uuid.uuid4())
+    message["role"] = "user"
+    
+    # Generate response
+    assistant_response = generate_chat_response(chat_session, message)
+    
+    # Add messages
+    chat["messages"].append(message)
+    chat["messages"].append({
+        "message_id": str(uuid.uuid4()),
+        "role": "assistant",
+        "content": assistant_response
+    })
+    
+    # Save updated chat
+    chat_manager.save_chat(chat, x_session_id)
+    return chat
 
 @router.get("/images/{chat_id}/{message_id}.png")
 async def get_chat_image(chat_id: str, message_id: str):
