@@ -205,6 +205,116 @@
     background: #555555;
 }
 
+/* Newsletter Detail Styles */
+.newsletterDetail {
+    background: #f8f8f8;
+    padding: 40px 20px;
+}
+
+.detailContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+}
+
+.backButton {
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 30px;
+    transition: color 0.2s ease;
+}
+
+.backButton:hover {
+    color: #333;
+}
+
+.detailHeader {
+    margin-bottom: 30px;
+}
+
+.detailCategory {
+    display: inline-block;
+    background: #333;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.detailMeta {
+    display: flex;
+    gap: 20px;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.detailTitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: #333;
+    line-height: 1.3;
+}
+
+.detailImageContainer {
+    margin: 30px -40px;
+}
+
+.detailImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.detailContent {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #444;
+}
+
+.detailContent p {
+    margin-bottom: 24px;
+}
+
+.shareSection {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.shareSection h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.shareButtons {
+    display: flex;
+    gap: 12px;
+}
+
+.shareButton {
+    background: #f0f0f0;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: #666;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.shareButton:hover {
+    background: #e0e0e0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .heroContent h1 {
