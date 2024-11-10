@@ -20,22 +20,22 @@ router = APIRouter()
 chat_manager = ChatHistoryManager(model="llm-cnn")
 
 @router.get("/chats")
-async def get_chats(limit: Optional[int] = None, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
+async def get_chats(x_session_id: str = Header(None, alias="X-Session-ID"), limit: Optional[int] = None):
     """Get all chats, optionally limited to a specific number"""
     print("x_session_id:", x_session_id)
-    return chat_manager.get_recent_chats(limit)
+    return chat_manager.get_recent_chats(x_session_id, limit)
 
 @router.get("/chats/{chat_id}")
-async def get_chat(chat_id: str, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
+async def get_chat(chat_id: str, x_session_id: str = Header(None, alias="X-Session-ID")):
     """Get a specific chat by ID"""
     print("x_session_id:", x_session_id)
-    chat = chat_manager.get_chat(chat_id)
+    chat = chat_manager.get_chat(chat_id, x_session_id)
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
     return chat
 
 @router.post("/chats")
-async def start_chat_with_llm(message: Dict, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
+async def start_chat_with_llm(message: Dict, x_session_id: str = Header(None, alias="X-Session-ID")):
     print("content:", message["content"])
     print("x_session_id:", x_session_id)
     """Start a new chat with an initial message"""
@@ -103,15 +103,15 @@ async def start_chat_with_llm(message: Dict, x_session_id: Optional[str] = Heade
     }
     
     # Save chat
-    chat_manager.save_chat(chat_response)
+    chat_manager.save_chat(chat_response, x_session_id)
     return chat_response
 
 @router.post("/chats/{chat_id}")
-async def continue_chat_with_llm(chat_id: str, message: Dict, x_session_id: Optional[str] = Header(None, alias="X-Session-ID")):
+async def continue_chat_with_llm(chat_id: str, message: Dict, x_session_id: str = Header(None, alias="X-Session-ID")):
     print("content:", message["content"])
     print("x_session_id:", x_session_id)
     """Add a message to an existing chat"""
-    chat = chat_manager.get_chat(chat_id)
+    chat = chat_manager.get_chat(chat_id, x_session_id)
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
     
@@ -141,7 +141,7 @@ async def continue_chat_with_llm(chat_id: str, message: Dict, x_session_id: Opti
     })
     
     # Save updated chat
-    chat_manager.save_chat(chat)
+    chat_manager.save_chat(chat, x_session_id)
     return chat
 
 @router.get("/images/{chat_id}/{message_id}.png")
