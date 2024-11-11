@@ -4,13 +4,14 @@ In this tutorial we will setup three containers:
 * api-service
 * frontend-simple
 * frontend-react
+* vector-db
 
 ## Prerequisites
 * Have Docker installed
 * Have VSCode or editor of choice
 
 ## Setup Environments
-In this tutorial we will setup containers to run python code for creating APIs and a container to run HTML web server.
+In this tutorial we will setup containers to run python code for creating APIs and a container to run HTML web server. We will also use the vector-db as the RAG setup.
 
 ### Clone the github repository
 - Clone or download from [here](https://github.com/dlops-io/cheese-app-v2)
@@ -27,15 +28,29 @@ Your folder structure should look like this:
        |---api-service
        |---frontend-simple
        |---frontend-react
+       |---vector-db
    |-secrets
    |-persistent-folder
 ```
 
-## Backend APIs
-We will create a basic backend container to run our REST API. The FastAPI framework will be used for this.
+## Vector DB for RAG Setup
+We will start our vector DB and ensure we have loaded all th cheese book chunks + embeddings
 
-The following tasks is what we will implement:
-<img src="images/container-architecture-1.png"  width="800">
+### Go into the vector-db folder 
+- Open a terminal and go to the location where `cheese-app-v2/vector-db`
+
+### Build & Run Container
+- Run `sh docker-shell.sh`
+- Then we will download embeddings and load them int our vector DB
+- Run `python cli.py --download --load --chunk_type recursive-split`
+
+This step will ensure we have all the backend data for our cheese assistant RAG chat.
+
+## Backend APIs
+We will create a backend container to run our REST API. FastAPI framework will be used for this.
+
+<!-- The following tasks is what we will implement:
+<img src="images/container-architecture-1.png"  width="800"> -->
 
 ### Go into the api-service folder 
 - Open a terminal and go to the location where `cheese-app-v2/api-service`
@@ -53,40 +68,6 @@ The following tasks is what we will implement:
 - To run development API service run `uvicorn_server` from the docker shell
 - What is the command `uvicorn_server`?
 - Test the API service by going to `http://localhost:9000/`
-
-### Download models
-We need to download model experiments data from GCS bucket
-- Open `api/service.py` in your editor
-- Review the service.py file
-- Uncomment the following line:
-```
-# Start the tracker service
-asyncio.create_task(tracker_service.track())
-```
-- Save changes and wait for the experiments to be downloaded
-- Do we need to restart the API service?
-- Review `api/tracker.py`
-- Once experiments are downloaded, `tracker.py` generates a file called `leaderboard.csv`
-- Review `leaderboard.csv` opening the file using your host OS
-- If we shutdown the `api-service` container can we still access `leaderboard.csv`?
-
-### Build APIs
-- Open `api/service.py`
-- Uncomment the following line:
-```
-@app.get("/experiments")
-def experiments_fetch():
-    # Fetch experiments
-    df = pd.read_csv("/persistent/experiments/experiments.csv")
-
-    df["id"] = df.index
-    df = df.fillna("")
-
-    return df.to_dict("records")
-```
-- Test the API by going to `http://localhost:9000/experiments`
-
-- Also uncomment the apis `@app.get("/best_model")` and `@app.post("/predict")` to expose other APIs
 
 ### View API Docs
 Fast API gives us an interactive API documentation and exploration tool for free.
@@ -162,7 +143,7 @@ python cli.py --chunk --embed --load --chunk_type recursive-split
 
  -->
 
----
+
 ---
 
 ## Docker Cleanup
