@@ -1,6 +1,6 @@
 // DataService configuration
 const DataService = {
-    baseURL: 'http://localhost:9000', // Replace with your actual API base URL
+    baseURL: 'http://localhost:9000',
 
     async GetNewsletters(limit = 100) {
         try {
