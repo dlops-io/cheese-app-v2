@@ -1,6 +1,7 @@
 .container {
     /* margin-top: 67px; */
     /* Account for fixed header */
+    min-height: 1200px;
 }
 
 /* Hero Section */
