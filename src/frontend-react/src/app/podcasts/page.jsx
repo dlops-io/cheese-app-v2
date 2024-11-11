@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PlayCircle } from '@mui/icons-material';
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import PodcastCard from '@/components/shared/PodcastCard';
 //import DataService from "../../services/MockDataService"; // Mock
 import DataService from "../../services/DataService";
 
@@ -55,35 +54,7 @@ export default function PodcastsPage() {
 
             <div className={styles.episodesList}>
                 {episodes.map((episode) => (
-                    <div key={episode.id} className={styles.episodeCard}>
-                        <div className={styles.episodeHeader}>
-                            <div className={styles.episodeInfo}>
-                                <span className={styles.podcast}>FORMAGGIO</span>
-                                <h4 className={styles.episodeTitle}>{episode.title}</h4>
-                                <span className={styles.date}>{episode.date}</span>
-                            </div>
-                            <div className={styles.controls}>
-                                <button className={styles.playButton}>
-                                    <PlayCircle />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className={styles.progressContainer}>
-                            <div className={styles.timeStamp}>00:00:00</div>
-                            <div className={styles.progressBar}>
-                                <div className={styles.progress}></div>
-                            </div>
-                            <div className={styles.timeStamp}>{episode.duration}</div>
-                        </div>
-
-                        <div className={styles.episodeFooter}>
-                            <button className={styles.descriptionToggle}>
-                                Show description ▼
-                            </button>
-                            <VolumeUpIcon className={styles.volumeIcon} />
-                        </div>
-                    </div>
+                    <PodcastCard key={episode.id} podcast={episode}></PodcastCard>
                 ))}
             </div>
         </div>
