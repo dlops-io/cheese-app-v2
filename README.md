@@ -72,7 +72,7 @@ We will create a backend container to run our REST API. FastAPI framework will b
 - Go to `http://localhost:9000/docs` and test API
 
 ### Enable APIs
-- Enable the newsletters api but Uncommenting the route for newsletters.
+- Enable the newsletters api by uncommenting the route for newsletters.
 ```
 # Additional routers here
 app.include_router(newsletter.router, prefix="/newsletters")
@@ -82,7 +82,7 @@ app.include_router(newsletter.router, prefix="/newsletters")
 # app.include_router(llm_rag_chat.router, prefix="/llm-rag")
 # app.include_router(llm_agent_chat.router, prefix="/llm-agent")
 ```
-- Go to `http://localhost:9000/docs` and test API
+- Go to `http://localhost:9000/docs` and test the newsletters routes
 
 - For each module we have a separate route:
   - Newsletters (`api/routers/newsletters.py`)
