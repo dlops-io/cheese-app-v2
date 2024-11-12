@@ -188,11 +188,9 @@ npm install
 npm run dev
 ```
 
-<<<<<<< HEAD
 2. View your app at: http://localhost:3000
 
 > Note: Make sure the API service container is running for full functionality
-=======
 ### Review App
 - Go to Home page
 - Go to Newsletters, Podcasts - Review functionality
@@ -218,7 +216,6 @@ npm run dev
 - Review the components of the app
   - 
 
->>>>>>> 433f184db678730ba1824f0b583ccfd5a3e33094
 
 ---
 ## Docker Cleanup
