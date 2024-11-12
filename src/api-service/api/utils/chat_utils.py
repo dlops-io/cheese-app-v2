@@ -119,6 +119,7 @@ class ChatHistoryManager:
     def get_chat(self, chat_id: str, session_id: str) -> Optional[Dict]:
         """Get a specific chat by ID"""
         filepath = os.path.join(self.history_dir,session_id,f"{chat_id}.json")
+        chat_data = {}
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 chat_data = json.load(f)        

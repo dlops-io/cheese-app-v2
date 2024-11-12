@@ -11,9 +11,9 @@ function uuid() {
 const api = axios.create({
     baseURL: BASE_API_URL
 });
+const sessionId = uuid();
 // Add request interceptor to include session ID in headers
 api.interceptors.request.use((config) => {
-    const sessionId = uuid();
     if (sessionId) {
         config.headers['X-Session-ID'] = sessionId;
     }
@@ -23,7 +23,10 @@ api.interceptors.request.use((config) => {
 });
 
 const DataService = {
-
+    GetChat: async function (model, chat_id) {
+        const response = await api.get(BASE_API_URL + "/" + model + "/chats/" + chat_id);
+        return response.data;
+    },
     StartChatWithLLM: async function (model, message) {
         const response = await api.post(BASE_API_URL + "/" + model + "/chats/", message);
         return response.data;
@@ -47,6 +50,7 @@ class ChatApp {
         this.previewImg = document.getElementById('previewImg');
         this.modelSelect = document.getElementById('modelSelect');
 
+        this.currentChatId = null;
         this.selectedImage = null;
         this.isTyping = false;
 
@@ -133,24 +137,39 @@ class ChatApp {
         this.showTypingIndicator();
 
         try {
-            // Send message to server
-            const response = await DataService.StartChatWithLLM(
-                this.modelSelect.value,
-                messageData
-            );
+            let response;
+            if (this.currentChatId) {
+                // Continue existing chat
+                response = await DataService.ContinueChatWithLLM(
+                    this.modelSelect.value,
+                    this.currentChatId,
+                    messageData
+                );
+            } else {
+                // Start new chat
+                response = await DataService.StartChatWithLLM(
+                    this.modelSelect.value,
+                    messageData
+                );
+                this.currentChatId = response.chat_id;
+
+                // Update URL with chat_id without refreshing the page
+                // const newUrl = new URL(window.location);
+                // newUrl.searchParams.set('chat_id', this.currentChatId);
+                // window.history.pushState({}, '', newUrl);
+            }
 
             // Hide typing indicator
             this.hideTypingIndicator();
 
             // Add assistant response to chat
             this.appendMessage('assistant', {
-                content: response.content,
-                timestamp: new Date().toISOString()
+                content: response.messages[response.messages.length - 1].content,
+                timestamp: new Date(response.dts * 1000).toISOString()
             });
         } catch (error) {
             console.error('Error sending message:', error);
             this.hideTypingIndicator();
-            // Add error message to chat
             this.appendMessage('assistant', {
                 content: 'Sorry, there was an error processing your message.',
                 timestamp: new Date().toISOString()
@@ -195,6 +214,8 @@ class ChatApp {
     }
 
     appendMessage(role, messageData) {
+        console.log(role, messageData);
+
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${role}`;
 
