@@ -118,7 +118,7 @@ We will build a simple frontend app that uses basic HTML & Javascript. We will c
 - Go to `http://localhost:8080/newsletters.html`
 - If your API service is running, the page should show cheese newsletters.
 
-### Review Frontend
+### Review Newsletter
 - Open `newsletters.html`
 - Review HTML & Javascript code on how APIs are called
 
@@ -127,7 +127,7 @@ We will build a simple frontend app that uses basic HTML & Javascript. We will c
 - Type in a question on the chat input: e.g:`How is cheese made?`
 - If your API service is running, the chat interface should return response from your backend Gemini LLM.
 
-### Review Frontend
+### Review Chat
 - Open `chat.html`
 - Review HTML & Javascript code on how APIs are called
 
@@ -143,7 +143,7 @@ Here we will use the React frontend framework to build a robust cheese app. The 
 First we need to install all dependencies by running: 
 - `npm install`
 
-This step is only required the first time you run the app. 
+This step is only required the first time you run the app. It install all the frontend components for the app to run.
 
 ### Start Development Web Server
 To run the app in development mode, simply run:
