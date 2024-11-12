@@ -109,37 +109,27 @@ We will build a simple frontend app that uses basic HTML & Javascript. We will c
 ### Build & Run Container
 - Run `sh docker-shell.sh`
 
-
 ### Start Web Server
 - To run development web server run `http-server` from the docker shell
-- Go to `http://localhost:8080/experiments.html`
-- If your API service is running, the page should show data from all cheese model experiments
+- Go to `http://localhost:8080/index.html`
+- You should see the home page of the cheese app
+
+### Test Newsletters
+- Go to `http://localhost:8080/newsletters.html`
+- If your API service is running, the page should show cheese newsletters.
 
 ### Review Frontend
-- Open `experiments.html`
+- Open `newsletters.html`
 - Review HTML & Javascript code on how APIs are called
 
-Now we have completed the following:
-* We read some data from a csv file in the persistent folder. 
-* Converted the data to list of dictionary objects in **Python** 
-* Exposed the results as a REST API using **FastAPI**
-* Called the API to get the experiments data
-* Displayed the data in a HTML table
+### Test Chat
+- Go to `http://localhost:8080/chat.html`
+- Type in a question on the chat input: e.g:`How is cheese made?`
+- If your API service is running, the chat interface should return response from your backend Gemini LLM.
 
-## Model Serving
-Here we will implement model serving using two different techniques:
-- Self hosting our model in FastAPI
-- Utilizing a deployed model on Vertex AI
-
-### Make Predictions
-- Go to `http://localhost:8080/` 
-- Upload an image of a cheese and view results
-
-### Review 
-- Open `index.html`
-- Review HTML & Javascript code on how model serving is called
-- Review `service.py` and inspect the endpoint `/predict`
-- Review `model.py`
+### Review Frontend
+- Open `chat.html`
+- Review HTML & Javascript code on how APIs are called
 
 ## Tutorial (25): Frontend App (React)
 Here we will use the React frontend framework to build a robust cheese app. The app will have multiple components and navigation.
