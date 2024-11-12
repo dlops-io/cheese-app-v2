@@ -150,9 +150,33 @@ To run the app in development mode, simply run:
 - Run `npm run dev` from the docker shell
 - Go to `http://localhost:3000`
 
+### Review App
+- Go to Home page
+- Go to Newsletters, Podcasts - Review functionality
+- Go to Chat Assistant. Try LLM, LLM + CNN, RAG chats
+
+### Review App Code
+- Open folder `frontend-react/src`
+
+### Data Services
+- Data Service (`src/services/DataService.js`)
+- Review Data Service methods that connects frontend to all backend APIs
+
+### App Pages
+- Open folder `frontend-react/src/app`
+- Review the main app pages
+  - Home (`src/app/page.jsx`)
+  - Newsletters (`src/app/newsletters/page.jsx`)
+  - Podcasts (`src/app/podcasts/page.jsx`)
+  - Chat Assistant (`src/app/chat/page.jsx`)
+
+### App Components
+- Open folder `frontend-react/src/components`
+- Review the components of the app
+  - 
+
 
 ---
-
 ## Docker Cleanup
 
 ### Make sure we do not have any running containers and clear up an unused images
