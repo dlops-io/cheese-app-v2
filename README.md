@@ -57,9 +57,7 @@ python cli.py --download --load --chunk_type recursive-split
 ```
 
 This process will:
-- Download the cheese knowledge base
-- Create text chunks from the content
-- Generate embeddings for each chunk
+- Download the cheese knowledge base (chunks + embeddings)
 - Load everything into the vector database for RAG functionality
 
 > Note: This step is crucial for enabling our cheese assistant to provide accurate, knowledge-based responses.
