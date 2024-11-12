@@ -8,17 +8,21 @@ In this tutorial we will setup three containers:
 
 ## Prerequisites
 * Have Docker installed
-* Have VSCode or editor of choice
 
-## Tutorial (23): Setup Environments
-In this tutorial we will setup containers to run python code for creating APIs and a container to run HTML web server. We will also use the vector-db as the RAG setup.
+## Tutorial (23): Environment Setup
+This tutorial covers setting up three main components:
+1. A Python container for our API services
+2. A web server container for the frontend
+3. A vector database container for RAG (Retrieval Augmented Generation)
+
+Each container will run in isolation but communicate with each other to create our complete cheese application.
 
 ### Clone the github repository
 - Clone or download from [here](https://github.com/dlops-io/cheese-app-v2)
 
 ### Create a local **secrets** folder
 
-It is important to note that we do not want any secure information in Git. So we will manage these files outside of the git folder. At the same level as the `cheese-app-v2` folder create a folder called **secrets**
+It is important to note that we do not want any secure information in Git. So we will manage these files outside of the git folder. At the same level as the `cheese-app-v2` folder create a folder called **secrets**. Add the  secret file from the `ml-workflow` tutorial. 
 
 Your folder structure should look like this:
 ```
@@ -34,46 +38,67 @@ Your folder structure should look like this:
 ```
 
 ## Tutorial (23): Vector DB for RAG Setup
-We will start our vector DB and ensure we have loaded all th cheese book chunks + embeddings
+We will set up and initialize our vector database with cheese-related content for Retrieval Augmented Generation (RAG).
 
-### Go into the vector-db folder 
-- Open a terminal and go to the location where `cheese-app-v2/vector-db`
+### Set up the Vector Database
+1. Navigate to the vector-db directory:
+```bash
+cd cheese-app-v2/src/vector-db
+```
 
-### Build & Run Container
-- Run `sh docker-shell.sh`
-- Then we will download embeddings and load them int our vector DB
-- Run `python cli.py --download --load --chunk_type recursive-split`
+2. Build and run the container:
+```bash
+sh docker-shell.sh
+```
 
-This step will ensure we have all the backend data for our cheese assistant RAG chat.
+3. Initialize the database. Run this within the docker shell:
+```bash
+python cli.py --download --load --chunk_type recursive-split
+```
+
+This process will:
+- Download the cheese knowledge base
+- Create text chunks from the content
+- Generate embeddings for each chunk
+- Load everything into the vector database for RAG functionality
+
+> Note: This step is crucial for enabling our cheese assistant to provide accurate, knowledge-based responses.
+
+Keep this container running while setting up the backend API service and frontend apps.
 
 ## Tutorial (23): Backend APIs
-We will create a backend container to run our REST API. FastAPI framework will be used for this.
+We will create a backend container running a FastAPI-based REST API service.
 
-### Go into the api-service folder 
-- Open a terminal and go to the location where `cheese-app-v2/api-service`
+### Setup Steps
 
-### Build & Run Container
-- Run `sh docker-shell.sh`
-
-### Review docker container setup
-- Review `Dockerfile` for `EXPOSE 9000`
-- Review `docker-shell.sh` for `-p 9000:9000` option
-- Review `docker-shell.sh` for `-e DEV=1` option
-- Review `docker-entrypoint.sh` for dev mode vs production mode
-
-### Start API Service
-- To run development API service run `uvicorn_server` from the docker shell
-- What is the command `uvicorn_server`?
-- Test the API service by going to `http://localhost:9000/`
-
-### Review APIs
-- Open `api/service.py` in your editor
-- Review the service.py file
-- Go to `http://localhost:9000/docs` and test API
-
-### Enable APIs
-- Enable the newsletters api by uncommenting the route for newsletters.
+1. **Navigate to API Service Directory**
+```bash
+cd cheese-app-v2/src/api-service
 ```
+
+2. **Build & Run Container**
+```bash
+sh docker-shell.sh
+```
+
+3. **Review Container Configuration** 
+- Check `docker-shell.sh`: 
+  - Port mapping: `-p 9000:9000`
+  - Development mode: `-e DEV=1`
+- Check `docker-entrypoint.sh`: Dev vs. Production settings
+
+4. **Start the API Service**
+
+Run the following command within the docker shell:
+```bash
+uvicorn_server
+```
+Verify service is running at `http://localhost:9000`
+
+### Enable API Routes
+
+1. **Enable All Routes in `api/service.py`**
+```python
 # Additional routers here
 app.include_router(newsletter.router, prefix="/newsletters")
 # app.include_router(podcast.router, prefix="/podcasts")
@@ -99,57 +124,73 @@ Fast API gives us an interactive API documentation and exploration tool for free
 - Go to `http://localhost:9000/docs`
 - You can test APIs from this tool
 
+Keep this container running while setting up the backend API service and frontend apps.
+## Tutorial (24): Simple Frontend App
+This section covers building a basic frontend using HTML & JavaScript that will interact with our API service.
 
-## Tutorial (24): Frontend App (Simple)
-We will build a simple frontend app that uses basic HTML & Javascript. We will consume the REST APIs exposed by the api service container
+### Setup Instructions
+1. Navigate to the frontend directory:
+```bash
+cd cheese-app-v2/src/frontend-simple
+```
 
-### Go into the frontend-simple folder 
-- Open a terminal and go to the location where `cheese-app-v2/frontend-simple`
+2. Build & Run the container:
+```bash
+sh docker-shell.sh
+```
 
-### Build & Run Container
-- Run `sh docker-shell.sh`
+3. Launch the development web server:
+```bash
+http-server
+```
 
-### Start Web Server
-- To run development web server run `http-server` from the docker shell
-- Go to `http://localhost:8080/index.html`
-- You should see the home page of the cheese app
 
-### Test Newsletters
-- Go to `http://localhost:8080/newsletters.html`
-- If your API service is running, the page should show cheese newsletters.
+### Testing the Application
 
-### Review Newsletter
-- Open `newsletters.html`
-- Review HTML & Javascript code on how APIs are called
+#### Home Page
+- Visit `http://localhost:8080/index.html`
+- You should see the cheese app landing page
 
-### Test Chat
-- Go to `http://localhost:8080/chat.html`
-- Type in a question on the chat input: e.g:`How is cheese made?`
-- If your API service is running, the chat interface should return response from your backend Gemini LLM.
+#### Newsletter Feature
+1. Open `http://localhost:8080/newsletters.html`
+2. Verify that cheese newsletters are loading (requires running API service)
+3. Review the code in `newsletters.html` to understand the API integration
 
-### Review Chat
-- Open `chat.html`
-- Review HTML & Javascript code on how APIs are called
+#### Chat Feature
+1. Open `http://localhost:8080/chat.html`
+2. Test the chat by asking a cheese-related question (e.g., "How is cheese made?")
+3. Review the code in `chat.html` to understand how the Gemini LLM integration works
 
-## Tutorial (25): Frontend App (React)
-Here we will use the React frontend framework to build a robust cheese app. The app will have multiple components and navigation.
+> Note: The API service must be running for both the newsletter and chat features to work properly.
 
-### Go into the frontend-react folder 
-- Open a terminal and go to the location where `cheese-app-v2/frontend-react`
+## Tutorial (25): React Frontend Setup
 
-### Build & Run Container
-- Run `sh docker-shell.sh`
+### Initial Setup
+1. Navigate to the React frontend directory:
+```bash
+cd cheese-app-v2/src/frontend-react
+```
 
-First we need to install all dependencies by running: 
-- `npm install`
+2. Start the development container:
+```bash
+sh docker-shell.sh
+```
 
-This step is only required the first time you run the app. It install all the frontend components for the app to run.
+### Dependencies Installation
+First time only: Install the required Node packages
+```bash
+npm install
+```
 
-### Start Development Web Server
-To run the app in development mode, simply run:
-- Run `npm run dev` from the docker shell
-- Go to `http://localhost:3000`
+### Launch Development Server
+1. Start the development server:
+```bash
+npm run dev
+```
 
+2. View your app at: http://localhost:3000
+
+> Note: Make sure the API service container is running for full functionality
 
 ---
 
