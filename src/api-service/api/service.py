@@ -22,7 +22,7 @@ async def get_index():
     return {"message": "Welcome to AC215"}
 
 # Additional routers here
-app.include_router(newsletter.router, prefix="/newsletters")
+# app.include_router(newsletter.router, prefix="/newsletters")
 # app.include_router(podcast.router, prefix="/podcasts")
 # app.include_router(llm_chat.router, prefix="/llm")
 # app.include_router(llm_cnn_chat.router, prefix="/llm-cnn")
