@@ -10,7 +10,7 @@ In this tutorial we will setup three containers:
 * Have Docker installed
 * Have VSCode or editor of choice
 
-## Setup Environments
+## Tutorial (23): Setup Environments
 In this tutorial we will setup containers to run python code for creating APIs and a container to run HTML web server. We will also use the vector-db as the RAG setup.
 
 ### Clone the github repository
@@ -33,7 +33,7 @@ Your folder structure should look like this:
    |-persistent-folder
 ```
 
-## Vector DB for RAG Setup
+## Tutorial (23): Vector DB for RAG Setup
 We will start our vector DB and ensure we have loaded all th cheese book chunks + embeddings
 
 ### Go into the vector-db folder 
@@ -46,7 +46,7 @@ We will start our vector DB and ensure we have loaded all th cheese book chunks 
 
 This step will ensure we have all the backend data for our cheese assistant RAG chat.
 
-## Backend APIs
+## Tutorial (23): Backend APIs
 We will create a backend container to run our REST API. FastAPI framework will be used for this.
 
 ### Go into the api-service folder 
@@ -84,11 +84,8 @@ Fast API gives us an interactive API documentation and exploration tool for free
 
 
 
-## Frontend App (Simple)
+## Tutorial (24): Frontend App (Simple)
 We will build a simple frontend app that uses basic HTML & Javascript. We will consume the REST APIs exposed by the api service container
-
-The following tasks is what we will implement:
-<img src="images/container-architecture-2.png"  width="800">
 
 ### Go into the frontend-simple folder 
 - Open a terminal and go to the location where `cheese-app-v2/frontend-simple`
@@ -128,7 +125,7 @@ Here we will implement model serving using two different techniques:
 - Review `service.py` and inspect the endpoint `/predict`
 - Review `model.py`
 
-## Frontend App (React)
+## Tutorial (25): Frontend App (React)
 Here we will use the React frontend framework to build a robust cheese app. The app will have multiple components and navigation.
 
 ### Go into the frontend-react folder 
@@ -140,18 +137,12 @@ Here we will use the React frontend framework to build a robust cheese app. The 
 First we need to install all dependencies by running: 
 - `npm install`
 
+This step is only required the first time you run the app. 
 
 ### Start Development Web Server
 To run the app in development mode, simply run:
 - Run `npm run dev` from the docker shell
 - Go to `http://localhost:3000`
-
-
-<!-- 
-vector-db-cli
-python cli.py --chunk --embed --load --chunk_type recursive-split
-
- -->
 
 
 ---
