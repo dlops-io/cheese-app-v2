@@ -49,9 +49,6 @@ This step will ensure we have all the backend data for our cheese assistant RAG 
 ## Backend APIs
 We will create a backend container to run our REST API. FastAPI framework will be used for this.
 
-<!-- The following tasks is what we will implement:
-<img src="images/container-architecture-1.png"  width="800"> -->
-
 ### Go into the api-service folder 
 - Open a terminal and go to the location where `cheese-app-v2/api-service`
 
@@ -69,10 +66,23 @@ We will create a backend container to run our REST API. FastAPI framework will b
 - What is the command `uvicorn_server`?
 - Test the API service by going to `http://localhost:9000/`
 
+### Review APIs
+- Open `api/service.py` in your editor
+- Review the service.py file
+- For each module we have a separate route:
+  - Newsletters (`api/routers/newsletters.py`)
+  - Podcasts (`api/routers/podcasts.py`)
+  - LLM Chat (`api/routers/llm_chat.py`)
+  - LLM + CNN Chat (`api/routers/llm_cnn_chat.py`)
+  - LLM Rag (`api/routers/llm_rag_chat.py`)
+  - LLM Agent  (`api/routers/llm_agent_chat.py`)
+
 ### View API Docs
 Fast API gives us an interactive API documentation and exploration tool for free.
 - Go to `http://localhost:9000/docs`
 - You can test APIs from this tool
+
+
 
 ## Frontend App (Simple)
 We will build a simple frontend app that uses basic HTML & Javascript. We will consume the REST APIs exposed by the api service container
