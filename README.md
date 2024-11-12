@@ -69,6 +69,21 @@ We will create a backend container to run our REST API. FastAPI framework will b
 ### Review APIs
 - Open `api/service.py` in your editor
 - Review the service.py file
+- Go to `http://localhost:9000/docs` and test API
+
+### Enable APIs
+- Enable the newsletters api but Uncommenting the route for newsletters.
+```
+# Additional routers here
+app.include_router(newsletter.router, prefix="/newsletters")
+# app.include_router(podcast.router, prefix="/podcasts")
+# app.include_router(llm_chat.router, prefix="/llm")
+# app.include_router(llm_cnn_chat.router, prefix="/llm-cnn")
+# app.include_router(llm_rag_chat.router, prefix="/llm-rag")
+# app.include_router(llm_agent_chat.router, prefix="/llm-agent")
+```
+- Go to `http://localhost:9000/docs` and test API
+
 - For each module we have a separate route:
   - Newsletters (`api/routers/newsletters.py`)
   - Podcasts (`api/routers/podcasts.py`)
@@ -77,11 +92,12 @@ We will create a backend container to run our REST API. FastAPI framework will b
   - LLM Rag (`api/routers/llm_rag_chat.py`)
   - LLM Agent  (`api/routers/llm_agent_chat.py`)
 
+- Enable all the routes
+
 ### View API Docs
 Fast API gives us an interactive API documentation and exploration tool for free.
 - Go to `http://localhost:9000/docs`
 - You can test APIs from this tool
-
 
 
 ## Tutorial (24): Frontend App (Simple)
