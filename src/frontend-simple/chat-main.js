@@ -152,11 +152,6 @@ class ChatApp {
                     messageData
                 );
                 this.currentChatId = response.chat_id;
-
-                // Update URL with chat_id without refreshing the page
-                // const newUrl = new URL(window.location);
-                // newUrl.searchParams.set('chat_id', this.currentChatId);
-                // window.history.pushState({}, '', newUrl);
             }
 
             // Hide typing indicator
