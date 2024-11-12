@@ -213,8 +213,9 @@ npm run dev
 
 ### App Components
 - Open folder `frontend-react/src/components`
-- Review the components of the app
-  - 
+- Review components of the app
+  - Layout for common components such as Header, Footer
+  - Chat for all the chat components
 
 
 ---
