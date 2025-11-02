@@ -24,8 +24,10 @@ chat_manager = ChatHistoryManager(model="llm")
 
 
 class ChatMessage(BaseModel):
-    content: str = Field("", description="The message content")
-    image: str = Field("", description="The image content")
+    content: Optional[str] = Field(None, description="The message content")
+    image: Optional[str] = Field(None, description="The image content")
+    message_id: Optional[str] = Field(None, description="The message id")
+    role: Optional[str] = Field(None, description="The role")
 
 
 @router.get("/chats")
