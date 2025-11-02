@@ -48,7 +48,7 @@ async def start_chat_with_llm(
     message: ChatMessage, x_session_id: str = Header(None, alias="X-Session-ID")
 ):
     message_dict = message.model_dump()
-    print("content:", message["content"])
+    print("content:", message_dict["content"])
     print("x_session_id:", x_session_id)
     """Start a new chat with an initial message"""
     chat_id = str(uuid.uuid4())
