@@ -11,5 +11,13 @@ echo "UV version: $(uv --version)"
 echo "Activating virtual environment..."
 source /.venv/bin/activate
 
-# Keep a shell open
-exec /bin/bash
+args="$@"
+echo $args
+
+if [[ -z ${args} ]]; 
+then
+    # Keep a shell open
+    exec /bin/bash
+else
+  uv run python $args
+fi
