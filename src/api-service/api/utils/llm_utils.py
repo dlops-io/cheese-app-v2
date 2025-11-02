@@ -26,12 +26,6 @@ GENERATIVE_MODEL = "gemini-2.0-flash-001"
 llm_client = genai.Client(vertexai=True, project=GCP_PROJECT, location=GCP_LOCATION)
 #############################################################################
 
-# Configuration settings for the content generation
-generation_config = {
-    "max_output_tokens": 3000,  # Maximum number of tokens for output
-    "temperature": 0.1,  # Control randomness in output
-    "top_p": 0.95,  # Use nucleus sampling
-}
 # Initialize the GenerativeModel with specific system instructions
 SYSTEM_INSTRUCTION = """
 You are an AI assistant specialized in cheese knowledge.

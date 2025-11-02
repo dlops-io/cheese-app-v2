@@ -6,7 +6,7 @@ import uuid
 import time
 from datetime import datetime
 import mimetypes
-from pydantic import BaseModel, Field
+
 from pathlib import Path
 from api.utils.llm_utils import (
     chat_sessions,
@@ -14,20 +14,13 @@ from api.utils.llm_utils import (
     generate_chat_response,
     rebuild_chat_session,
 )
-from api.utils.chat_utils import ChatHistoryManager
+from api.utils.chat_utils import ChatHistoryManager, ChatMessage
 
 # Define Router
 router = APIRouter()
 
 # Initialize chat history manager and sessions
 chat_manager = ChatHistoryManager(model="llm")
-
-
-class ChatMessage(BaseModel):
-    content: Optional[str] = Field(None, description="The message content")
-    image: Optional[str] = Field(None, description="The image content")
-    message_id: Optional[str] = Field(None, description="The message id")
-    role: Optional[str] = Field(None, description="The role")
 
 
 @router.get("/chats")
