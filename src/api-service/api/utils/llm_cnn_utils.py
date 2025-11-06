@@ -93,7 +93,7 @@ def rebuild_chat_session(chat_history: List[Dict]) -> Chat:
                     parts=[types.Part.from_text(text=message["content"])]
                 )
             )
-        elif message["cnn"] == "user":
+        elif message["role"] == "cnn":
             formatted_history.append(
                 types.UserContent(
                     parts=[

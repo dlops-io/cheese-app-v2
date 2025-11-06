@@ -143,6 +143,7 @@ Fast API gives us an interactive API documentation and exploration tool for free
 - You can test APIs from this tool
 
 Keep this container running while setting up the backend API service and frontend apps.
+
 ## Tutorial (24): Simple Frontend App
 This section covers building a basic frontend using HTML & JavaScript that will interact with our API service.
 

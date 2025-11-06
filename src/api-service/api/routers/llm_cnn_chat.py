@@ -126,7 +126,7 @@ async def continue_chat_with_llm(
     x_session_id: str = Header(None, alias="X-Session-ID"),
 ):
     message_dict = message.model_dump()
-    print("content:", message["content"])
+    print("content:", message_dict["content"])
     print("x_session_id:", x_session_id)
     """Add a message to an existing chat"""
     chat = chat_manager.get_chat(chat_id, x_session_id)
