@@ -3,9 +3,10 @@
 from functools import cache
 
 import chromadb
+import httpx
 from chromadb.errors import ChromaError, NotFoundError
 from fastapi import HTTPException
-from google.genai import types
+from google.genai import errors, types
 
 from api import settings
 from api.utils.chat_utils import ChatHistoryManager
@@ -42,21 +43,25 @@ def chroma_client() -> chromadb.ClientAPI:
 
 
 def generate_query_embedding(query: str) -> list[float]:
-    response = llm_client.models.embed_content(
-        model=settings.EMBEDDING_MODEL,
-        contents=query,
-        config=types.EmbedContentConfig(output_dimensionality=settings.EMBEDDING_DIMENSION),
-    )
+    try:
+        response = llm_client.models.embed_content(
+            model=settings.EMBEDDING_MODEL,
+            contents=query,
+            config=types.EmbedContentConfig(output_dimensionality=settings.EMBEDDING_DIMENSION),
+        )
+    except errors.APIError as e:
+        raise HTTPException(status_code=502, detail=f"Gemini: {e}")
     return response.embeddings[0].values
 
 
 def find_chunks(query: str) -> list[str]:
+    embedding = generate_query_embedding(query)
     try:
         collection = chroma_client().get_collection(name=COLLECTION_NAME)
-        results = collection.query(query_embeddings=[generate_query_embedding(query)], n_results=5)
+        results = collection.query(query_embeddings=[embedding], n_results=5)
     except NotFoundError:
         raise HTTPException(status_code=503, detail="The vector DB is empty: load it first (see vector-db)")
-    except (ChromaError, ValueError) as e:
+    except (ChromaError, ValueError, httpx.TransportError) as e:
         raise HTTPException(status_code=503, detail=f"Chroma: {e}")
     return results["documents"][0]
 

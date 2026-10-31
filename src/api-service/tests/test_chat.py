@@ -1,6 +1,7 @@
 import uuid
 from types import SimpleNamespace
 
+import httpx
 import pytest
 from google.genai import errors
 
@@ -148,6 +149,17 @@ def test_rag_without_chroma_is_a_503(client, session, monkeypatch):
         raise ValueError("Could not connect to a Chroma server")
 
     monkeypatch.setattr(llm_rag_utils, "chroma_client", no_chroma)
+    response = client.post("/api/llm-rag/chats", json={"content": "hi"}, headers=session)
+    assert response.status_code == 503
+    assert "Chroma" in response.json()["detail"]
+
+
+def test_chroma_going_away_after_connecting_is_a_503(client, session, monkeypatch):
+    def unreachable(name):
+        raise httpx.ConnectError("Name or service not known")
+
+    monkeypatch.setattr(llm_rag_utils, "generate_query_embedding", lambda query: [0.0])
+    monkeypatch.setattr(llm_rag_utils, "chroma_client", lambda: SimpleNamespace(get_collection=unreachable))
     response = client.post("/api/llm-rag/chats", json={"content": "hi"}, headers=session)
     assert response.status_code == 503
     assert "Chroma" in response.json()["detail"]
