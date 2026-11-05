@@ -9,11 +9,6 @@ In this tutorial we run the whole Cheese App on our laptop, in four containers o
 | `src/api-service/` | `cheese-app-api-service` | http://localhost:9000 | FastAPI: content, and chat with Gemini, a CNN and RAG |
 | `src/frontend-react/` | `cheese-app-frontend-react` | http://localhost:3000 | React + Vite in development, nginx in production |
 
-Do the **Cheese Shop** tutorial first. This app uses the same setup: each folder has a `docker-shell.sh`,
-the browser only calls `/api/...` on its own origin, and Vite forwards those calls to the API.
-
-The routes, messages and settings the frontend and the API agree on are in
-[docs/contract.md](docs/contract.md).
 
 ## Prerequisites
 * Docker, with ports 3000, 8000 and 9000 free
@@ -22,7 +17,7 @@ The routes, messages and settings the frontend and the API agree on are in
   **Vertex AI User** role.
 * About 10 GB of free disk space. The API's image holds TensorFlow.
 
-## Tutorial (23): Environment Setup
+## Tutorial: Environment Setup
 
 ### Clone the github repository
 - Clone or download from [here](https://github.com/dlops-io/cheese-app-v2)
@@ -54,7 +49,7 @@ Change `GCP_PROJECT` to your own project ID at the top of both of these files:
 - `src/api-service/docker-shell.sh`
 - `src/vector-db/docker-shell.sh`
 
-## Tutorial (23): Vector DB for RAG Setup
+## Tutorial: Vector DB for RAG Setup
 We load the cheese books into Chroma, so the assistant can answer from them. This is the
 Retrieval Augmented Generation (RAG) step.
 
@@ -83,7 +78,7 @@ python cli.py --chat --chunk_type recursive-split
 4. Leave with `exit`. Chroma keeps running in the background, with its data in
 `src/vector-db/docker-volumes/chromadb`.
 
-## Tutorial (23): Backend APIs
+## Tutorial: Backend APIs
 We run a FastAPI service for everything the frontend needs.
 
 ### Start the API
@@ -149,7 +144,7 @@ pytest
 
 Keep this container running.
 
-## Tutorial (25): React Frontend Setup
+## Tutorial: React Frontend Setup
 
 ### Start the frontend
 1. In a new terminal, from the `cheese-app-v2` folder, build and run the container:
@@ -194,24 +189,35 @@ Check your code before you commit:
 npm run check
 ```
 
-## Production images
-So far we have used development images, with your code mounted and a server that reloads. The
-production images hold only what the app needs to run.
+## Tutorial: Setup & Run Cheese App
+Instead of three terminals, one command builds and starts the whole app.
 
-Stop `npm run dev` with Ctrl-C and leave the container with `exit`. Then, from `src/frontend-react`:
+1. Do the [Environment Setup](#tutorial-environment-setup) first, then change `GCP_PROJECT` to your
+   own project ID in `src/docker-compose.yml`. It appears twice.
+
+2. If any of the containers above are still running, stop them: Ctrl-C and `exit` in their terminals,
+   and `docker compose down` in `src/vector-db`.
+
+3. From the `cheese-app-v2` folder:
 ```bash
-docker build -t cheese-app-frontend-react:prod .
+cd src
 ```
 
 ```bash
-docker run --rm --network cheese-app-network -p 8080:80 cheese-app-frontend-react:prod
+docker compose up --build
 ```
 
-Open http://localhost:8080. There is no Vite and no Node now: nginx serves the built files and passes
-`/api` to the API container (see `nginx.conf.template`). The browser code did not change. Compare the
-sizes:
+The first run takes a few minutes to build the images and load the books. Later runs reuse the
+images and skip the load, because the books are already in Chroma.
+
+4. Open http://localhost:3000. and http://localhost:900/api/docs.
+
+The code is still mounted, so the API and the frontend reload when you save. To open a shell in a
+running container, for example to run `pytest`, run its `docker-shell.sh` as before.
+
+5. Stop everything with Ctrl-C, then:
 ```bash
-docker images | grep cheese-app-frontend-react
+docker compose down
 ```
 
 ## Troubleshooting
