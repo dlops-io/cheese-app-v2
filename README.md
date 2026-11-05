@@ -11,15 +11,15 @@ In this tutorial we run the whole Cheese App on our laptop, in four containers o
 
 
 ## Prerequisites
-* Docker, with ports 3000, 8000 and 9000 free
-* A Google Cloud project with the Vertex AI API enabled
-* The `ml-workflow.json` service account key from the `ml-workflow` tutorial. The account needs the
+- Docker, with ports 3000, 8000 and 9000 free
+- A Google Cloud project with the Vertex AI API enabled
+- The `ml-workflow.json` service account key from the `ml-workflow` tutorial. The account needs the
   **Vertex AI User** role.
-* About 10 GB of free disk space. The API's image holds TensorFlow.
+- About 10 GB of free disk space. The API's image holds TensorFlow.
 
 ## Tutorial: Environment Setup
 
-### Clone the github repository
+### Clone the GitHub repository
 - Clone or download from [here](https://github.com/dlops-io/cheese-app-v2)
 
 ### Create the local folders
@@ -210,7 +210,7 @@ docker compose up --build
 The first run takes a few minutes to build the images and load the books. Later runs reuse the
 images and skip the load, because the books are already in Chroma.
 
-4. Open http://localhost:3000. and http://localhost:900/api/docs.
+4. Open http://localhost:3000, and the API docs at http://localhost:9000/api/docs.
 
 The code is still mounted, so the API and the frontend reload when you save. To open a shell in a
 running container, for example to run `pytest`, run its `docker-shell.sh` as before.
@@ -225,8 +225,8 @@ docker compose down
 | What you see | What to do |
 | --- | --- |
 | `/readyz` answers `503` with `CNN model is loading` | Wait. The first run downloads the model |
-| `/readyz` answers `503` with `Chroma: ...`, or Cheese books says the same | Chroma is not running. Run `docker compose up -d chromadb` in `src/vector-db` |
-| Cheese books says `The vector DB is empty` | Load it: step 2 of the Vector DB section |
+| `/readyz` answers `503` with `Chroma: ...`, or Cheese books says the same | Chroma is not running. Run `docker compose up -d chromadb` in `src/vector-db`, or `docker compose up -d vector-db` in `src` if you used the one command |
+| Cheese books says `The vector DB is empty` | Load it: step 2 of the Vector DB section. With the one command, run `docker compose up vector-db-loader` in `src` |
 | Ask says `Gemini: 403` or `PERMISSION_DENIED` | Check `GCP_PROJECT`, the Vertex AI API and the service account's role |
 | Ask says `Gemini: 404` | Google retired the model. Change `GENERATIVE_MODEL` in `api/settings.py` |
 | Pages load with no content | The API container is not running, or `api_server` is not started |
