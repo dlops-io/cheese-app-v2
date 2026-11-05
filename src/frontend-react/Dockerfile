@@ -1,37 +1,16 @@
-# Build stage
-FROM node:18-alpine AS build
-
+# Production image (development uses Dockerfile.dev).
+# The build stage runs on the builder's own platform (no emulation): its output is plain files.
+FROM --platform=$BUILDPLATFORM node:24.22.1-bookworm-slim AS build
 WORKDIR /app
-
-# Install dependencies
 COPY package.json package-lock.json ./
 RUN npm ci
-
-# Copy source files
 COPY . .
-
-# Build the Next.js app
-# Copy env file for build time
-COPY .env.production .env
 RUN npm run build
 
-# Production stage
-FROM node:18-alpine AS production
-
-WORKDIR /app
-
-# Copy built assets from build stage
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/package-lock.json ./package-lock.json
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/.env ./.env
-
-# Install only production dependencies
-RUN npm ci --only=production
-
-# Expose the listening port
-EXPOSE 3000
-
-# Run the Next.js app
-CMD ["npm", "start"]
+# nginx serves the built files and passes /api to the API. It fills in API_URL when it starts, so
+# the same image runs anywhere.
+FROM nginx:1.31.8-alpine
+ENV API_URL=http://cheese-app-api-service:9000
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80

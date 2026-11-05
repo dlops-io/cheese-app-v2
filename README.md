@@ -1,247 +1,240 @@
 # Cheese App - APIs & Frontend
 
-In this tutorial we will setup three containers:
-* api-service
-* frontend-simple
-* frontend-react
-* vector-db
+In this tutorial we run the whole Cheese App on our laptop, in four containers on one Docker network:
+
+| Folder | Container | On your laptop | What it is |
+| --- | --- | --- | --- |
+| `src/vector-db/` | `cheese-app-vector-db` | http://localhost:8000 | Chroma, the vector database for RAG |
+| `src/vector-db/` | `cheese-app-vector-db-cli` | none | A command-line tool that loads the cheese books into Chroma |
+| `src/api-service/` | `cheese-app-api-service` | http://localhost:9000 | FastAPI: content, and chat with Gemini, a CNN and RAG |
+| `src/frontend-react/` | `cheese-app-frontend-react` | http://localhost:3000 | React + Vite in development, nginx in production |
+
+Do the **Cheese Shop** tutorial first. This app uses the same setup: each folder has a `docker-shell.sh`,
+the browser only calls `/api/...` on its own origin, and Vite forwards those calls to the API.
+
+The routes, messages and settings the frontend and the API agree on are in
+[docs/contract.md](docs/contract.md).
 
 ## Prerequisites
-* Have Docker installed
+* Docker, with ports 3000, 8000 and 9000 free
+* A Google Cloud project with the Vertex AI API enabled
+* The `ml-workflow.json` service account key from the `ml-workflow` tutorial. The account needs the
+  **Vertex AI User** role.
+* About 10 GB of free disk space. The API's image holds TensorFlow.
 
 ## Tutorial (23): Environment Setup
-This tutorial covers setting up three main components:
-1. A Python container for our API services
-2. A web server container for the frontend
-3. A vector database container for RAG (Retrieval Augmented Generation)
-
-Each container will run in isolation but communicate with each other to create our complete cheese application.
 
 ### Clone the github repository
 - Clone or download from [here](https://github.com/dlops-io/cheese-app-v2)
 
-### Create a local **secrets** folder
+### Create the local folders
 
-It is important to note that we do not want any secure information in Git. So we will manage these files outside of the git folder. At the same level as the `cheese-app-v2` folder create a folder called **secrets**. Add the  secret file from the `ml-workflow` tutorial. 
+We never put secrets in Git, so they live outside the repository. Next to the `cheese-app-v2` folder,
+create two folders:
+
+- **secrets**, with your `ml-workflow.json` in it
+- **persistent-folder**, which keeps the chat history and the trained CNN model
 
 Your folder structure should look like this:
 ```
    |-cheese-app-v2
+     |-docs
      |-images
      |-src
        |---api-service
-       |---frontend-simple
        |---frontend-react
        |---vector-db
    |-secrets
+     |---ml-workflow.json
    |-persistent-folder
 ```
 
+### Set your Google Cloud project
+Change `GCP_PROJECT` to your own project ID at the top of both of these files:
+- `src/api-service/docker-shell.sh`
+- `src/vector-db/docker-shell.sh`
+
 ## Tutorial (23): Vector DB for RAG Setup
-We will set up and initialize our vector database with cheese-related content for Retrieval Augmented Generation (RAG).
+We load the cheese books into Chroma, so the assistant can answer from them. This is the
+Retrieval Augmented Generation (RAG) step.
 
-### Set up the Vector Database
-1. Navigate to the vector-db directory:
+1. Build and run the container:
 ```bash
-cd cheese-app-v2/src/vector-db
+cd src/vector-db
 ```
 
-2. Build and run the container:
 ```bash
-sh docker-shell.sh
+./docker-shell.sh
 ```
 
-3. Initialize the database. Run this within the docker shell:
+2. Load the database. Run this inside the container:
 ```bash
 python cli.py --download --load --chunk_type recursive-split
 ```
 
-This process will:
-- Download the cheese knowledge base (chunks + embeddings)
-- Load everything into the vector database for RAG functionality
+This downloads the text chunks and embeddings we made for you and loads them into Chroma, which takes
+about a minute. `--chunk --embed` make the same files from scratch, if you want to see those steps.
 
-> Note: This step is crucial for enabling our cheese assistant to provide accurate, knowledge-based responses.
+3. Try a question through retrieval and Gemini:
+```bash
+python cli.py --chat --chunk_type recursive-split
+```
 
-Keep this container running while setting up the backend API service and frontend apps.
+4. Leave with `exit`. Chroma keeps running in the background, with its data in
+`src/vector-db/docker-volumes/chromadb`.
 
 ## Tutorial (23): Backend APIs
-We will create a backend container running a FastAPI-based REST API service.
+We run a FastAPI service for everything the frontend needs.
 
-### Setup Steps
-
-1. **Navigate to API Service Directory**
+### Start the API
+1. In a new terminal, from the `cheese-app-v2` folder, build and run the container. The first build
+   takes a few minutes, because of TensorFlow:
 ```bash
-cd cheese-app-v2/src/api-service
+cd src/api-service
 ```
 
-2. **Build & Run Container**
 ```bash
-sh docker-shell.sh
+./docker-shell.sh
 ```
 
-3. **Review Container Configuration** 
-- Check `docker-shell.sh`: 
-  - Port mapping: `-p 9000:9000`
-  - Development mode: `-e DEV=1`
-- Check `docker-entrypoint.sh`: Dev vs. Production settings
-
-4. **Start the API Service**
-
-Run the following command within the docker shell:
+2. Start the server inside the container:
 ```bash
-uvicorn_server
+api_server
 ```
-Verify service is running at `http://localhost:9000`
 
-### Create Demo Routes
-- Open `api/service.py` in your editor
-- Add the following code at the end of the file:
-```
-@app.get("/square_root/")
-async def square_root(x: float = 1, y: float = 2):
+3. Check that it is up:
+- http://localhost:9000/healthz says the process is running
+- http://localhost:9000/readyz says it is ready. The first time, this answers `503` until the CNN model
+  has downloaded and loaded, and it needs Chroma to be running.
+
+### Create a demo route
+Open `api/service.py`, add this after `get_status`, and save. `api_server` reloads by itself.
+```python
+@app.get("/api/square_root")
+def square_root(x: float = 1, y: float = 2):
     z = x**2 + y**2
     return z**0.5
 ```
-- Go to `http://localhost:9000/square_root/`
-- Do you see the square root computed by a python function displayed in the web browser?
-- Go to `http://localhost:9000/square_root/?x=2&y=10` adding parameters to your url
-- Do you see the new results?
 
-### View API Docs
-Fast API gives us an interactive API documentation and exploration tool for free.
-- Go to `http://localhost:9000/docs`
-- You can test APIs from this tool
+- Go to http://localhost:9000/api/square_root. Do you see the result in your browser?
+- Go to http://localhost:9000/api/square_root?x=3&y=4. Do you see `5.0`?
 
+### View API docs
+FastAPI gives us interactive API documentation for free.
+- Go to http://localhost:9000/api/docs
+- Try `GET /api/newsletters`
 
-### Enable Cheese App API Routes
+### Review the code
+| File | What it does |
+| --- | --- |
+| `api/service.py` | Creates the app and adds the routers |
+| `api/settings.py` | Every setting the API reads. To change the Gemini model, this is the one place |
+| `api/routers/newsletter.py`, `podcast.py` | The content routes |
+| `api/routers/chat.py` | The chat routes, the same for each mode |
+| `api/utils/llm_utils.py` | **Ask** mode: chat with Gemini |
+| `api/utils/llm_cnn_utils.py` | **Identify** mode: the CNN names the cheese, and Gemini answers after |
+| `api/utils/llm_rag_utils.py` | **Cheese books** mode: Gemini answers from chunks that Chroma finds |
+| `api/utils/chat_utils.py` | Saves chats as files in `/persistent` |
 
-1. **Enable All Routes in `api/service.py`**
-```python
-# Additional routers here
-app.include_router(newsletter.router, prefix="/newsletters")
-# app.include_router(podcast.router, prefix="/podcasts")
-# app.include_router(llm_chat.router, prefix="/llm")
-# app.include_router(llm_cnn_chat.router, prefix="/llm-cnn")
-# app.include_router(llm_rag_chat.router, prefix="/llm-rag")
-# app.include_router(llm_agent_chat.router, prefix="/llm-agent")
-```
-- Go to `http://localhost:9000/docs` and test the newsletters routes
+Two things to notice in `routers/chat.py`:
+- Each message rebuilds the conversation from the saved history. Nothing about a chat stays in
+  memory, so any copy of the API can answer it. We need that when we scale in `cheese-app-v3`.
+- The routes are plain `def`, not `async def`. Gemini, Chroma and the CNN are blocking calls. FastAPI
+  runs a `def` route in a thread, so one slow answer does not stop the API.
 
-- For each module we have a separate route:
-  - Newsletters (`api/routers/newsletters.py`)
-  - Podcasts (`api/routers/podcasts.py`)
-  - LLM Chat (`api/routers/llm_chat.py`)
-  - LLM + CNN Chat (`api/routers/llm_cnn_chat.py`)
-  - LLM Rag (`api/routers/llm_rag_chat.py`)
-  - LLM Agent  (`api/routers/llm_agent_chat.py`)
-
-- Enable all the routes
-
-### View API Docs
-Fast API gives us an interactive API documentation and exploration tool for free.
-- Go to `http://localhost:9000/docs`
-- You can test APIs from this tool
-
-Keep this container running while setting up the backend API service and frontend apps.
-
-## Tutorial (24): Simple Frontend App
-This section covers building a basic frontend using HTML & JavaScript that will interact with our API service.
-
-### Setup Instructions
-1. Navigate to the frontend directory:
+Run the tests inside the container:
 ```bash
-cd cheese-app-v2/src/frontend-simple
+pytest
 ```
 
-2. Build & Run the container:
-```bash
-sh docker-shell.sh
-```
-
-3. Launch the development web server:
-```bash
-http-server
-```
-
-
-### Testing the Application
-
-#### Home Page
-- Visit `http://localhost:8080/index.html`
-- You should see the cheese app landing page
-
-#### Newsletter Feature
-1. Open `http://localhost:8080/newsletters.html`
-2. Verify that cheese newsletters are loading (requires running API service)
-3. Review the code in `newsletters.html` to understand the API integration
-
-#### Chat Feature
-1. Open `http://localhost:8080/chat.html`
-2. Test the chat by asking a cheese-related question (e.g., "How is cheese made?")
-3. Review the code in `chat.html` to understand how the Gemini LLM integration works
-
-> Note: The API service must be running for both the newsletter and chat features to work properly.
+Keep this container running.
 
 ## Tutorial (25): React Frontend Setup
 
-### Initial Setup
-1. Navigate to the React frontend directory:
+### Start the frontend
+1. In a new terminal, from the `cheese-app-v2` folder, build and run the container:
 ```bash
-cd cheese-app-v2/src/frontend-react
+cd src/frontend-react
 ```
 
-2. Start the development container:
 ```bash
-sh docker-shell.sh
+./docker-shell.sh
 ```
 
-### Dependencies Installation
-First time only: Install the required Node packages
-```bash
-npm install
-```
-
-### Launch Development Server
-1. Start the development server:
+2. Start the development server inside the container:
 ```bash
 npm run dev
 ```
 
-2. View your app at: http://localhost:3000
+3. Open http://localhost:3000
 
-> Note: Make sure the API service container is running for full functionality
-### Review App
-- Go to Home page
-- Go to Newsletters, Podcasts - Review functionality
-- Go to Chat Assistant. Try LLM, LLM + CNN, RAG chats
+### Review the app
+- **Home:** type a question, or use the camera button to add a photo
+- **Podcasts and Newsletters:** these load through the API
+- **Chat:**
+  - **Ask:** a question for Gemini
+  - **Identify:** add a photo, then ask about the cheese
+  - **Cheese books:** try "How is Tolminc cheese made?"
 
-### Review App Code
-- Open folder `frontend-react/src`
+Your chats appear under **Recent**, and they are still there after you reload the page.
 
-### Data Services
-- Data Service (`src/services/DataService.js`)
-- Review Data Service methods that connects frontend to all backend APIs
+### Review the code
+| File | What it does |
+| --- | --- |
+| `vite.config.js` | Forwards `/api` to the API container |
+| `src/main.jsx` | The pages and their URLs |
+| `src/lib/api.js` | Every call to the API, and the session ID |
+| `src/routes/` | One component per page |
+| `src/routes/Chat.jsx` | The chat page: sending a message, loading chats, the three modes |
+| `src/components/` | Pieces used on several pages |
+| `src/styles.css` | Colors and fonts. The rest of the styling is Tailwind classes in the components |
 
-### App Pages
-- Open folder `frontend-react/src/app`
-- Review the main app pages
-  - Home (`src/app/page.jsx`)
-  - Newsletters (`src/app/newsletters/page.jsx`)
-  - Podcasts (`src/app/podcasts/page.jsx`)
-  - Chat Assistant (`src/app/chat/page.jsx`)
+Check your code before you commit:
+```bash
+npm run check
+```
 
-### App Components
-- Open folder `frontend-react/src/components`
-- Review components of the app
-  - Layout for common components such as Header, Footer
-  - Chat for all the chat components
+## Production images
+So far we have used development images, with your code mounted and a server that reloads. The
+production images hold only what the app needs to run.
 
+Stop `npm run dev` with Ctrl-C and leave the container with `exit`. Then, from `src/frontend-react`:
+```bash
+docker build -t cheese-app-frontend-react:prod .
+```
 
----
+```bash
+docker run --rm --network cheese-app-network -p 8080:80 cheese-app-frontend-react:prod
+```
+
+Open http://localhost:8080. There is no Vite and no Node now: nginx serves the built files and passes
+`/api` to the API container (see `nginx.conf.template`). The browser code did not change. Compare the
+sizes:
+```bash
+docker images | grep cheese-app-frontend-react
+```
+
+## Troubleshooting
+
+| What you see | What to do |
+| --- | --- |
+| `/readyz` answers `503` with `CNN model is loading` | Wait. The first run downloads the model |
+| `/readyz` answers `503` with `Chroma: ...`, or Cheese books says the same | Chroma is not running. Run `docker compose up -d chromadb` in `src/vector-db` |
+| Cheese books says `The vector DB is empty` | Load it: step 2 of the Vector DB section |
+| Ask says `Gemini: 403` or `PERMISSION_DENIED` | Check `GCP_PROJECT`, the Vertex AI API and the service account's role |
+| Ask says `Gemini: 404` | Google retired the model. Change `GENERATIVE_MODEL` in `api/settings.py` |
+| Pages load with no content | The API container is not running, or `api_server` is not started |
+| `port is already allocated` | Another container is using that port. Stop it, or run `docker ps` to find it |
+
 ## Docker Cleanup
 
-### Make sure we do not have any running containers and clear up an unused images
-* Run `docker container ls`
-* Stop any container that is running
-* Run `docker system prune`
-* Run `docker image ls`
+Stop the API and frontend containers with Ctrl-C and `exit`, then stop Chroma from `src/vector-db`:
+```bash
+docker compose down
+```
+
+The next command removes images and containers you are not using, across all your projects, so check
+the list it shows you first:
+```bash
+docker system prune
+```
